@@ -32,13 +32,24 @@ Then open http://localhost:8000. Opening `index.html` straight from Finder works
    badge from https://developer.apple.com/app-store/marketing/guidelines/ linked to the app's
    App Store URL.
 
-## Publishing on GitHub Pages
+## Publishing
 
-The App Store listing (`AppStore/2 Store Listing.md`) uses
-`https://sargeywargey.github.io/whattheflight/` for the marketing page, plus `support.html` and
-`privacy.html` there. Put the contents of this folder at the root of the `whattheflight`
-repository (or its `docs/` folder) and turn on Pages in the repository settings. This replaces the
-simpler pages in `AppStore/Website/`.
+This folder is its own git repository, https://github.com/SargeyWargey/whattheflight (public),
+served by GitHub Pages from `main` at https://sargeywargey.github.io/whattheflight/. That's the
+address the App Store listing (`AppStore/2 Store Listing.md`) uses, with `support.html` and
+`privacy.html` beside it. The app's repository ignores this folder.
+
+To publish a change, commit and push:
+
+```sh
+git add -A && git commit -m "Describe the change" && git push
+```
+
+The live site updates a minute or so later.
+
+**While it's a preview**, every page has `<meta name="robots" content="noindex, nofollow">` so search
+engines don't list it. Delete that line (and the comment above it) from `index.html`,
+`support.html` and `privacy.html` when the app launches.
 
 ## Updating screenshots
 
