@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Preview: keeps search engines from listing the site before launch. Remove when going live. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Support · What The Flight?</title>
+<meta name="description" content="Help with What The Flight? on iPhone, iPad, Apple Watch and Apple TV.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#E9E7E2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A0E14" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="css/site.css">
+<script>
+  try { const t = localStorage.getItem('wtf.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<script src="js/topography.js" defer></script>
+<script src="js/site.js" defer></script>
+</head>
+<body>
+
+<header class="page-top">
+  <canvas class="topo" data-topo="survey auto" aria-hidden="true"></canvas>
+  <div class="site-header">
+    <a class="brand" href="./" aria-label="What The Flight? home">
+      <img src="img/icon-512.png" alt="" width="36" height="36">
+      <span>What The Flight?</span>
+    </a>
+    <nav class="site-nav" aria-label="Pages">
+      <a href="./">Home</a>
+      <a href="support.html" aria-current="page">Support</a>
+      <a href="privacy.html">Privacy</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Switch to the night radar" data-theme-toggle>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="sun" cx="12" cy="12" r="4.2"/><path class="rays" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/><path class="moon" d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1Z"/></svg>
+    </button>
+  </div>
+  <div class="wrap page-title">
+    <h1>Help with What The Flight?</h1>
+    <p>For iPhone, iPad, Apple Watch and Apple TV</p>
+  </div>
+</header>
+
+<main class="wrap doc">
+  <h2>Common questions</h2>
+
+  <details>
+    <summary>I can see a plane, but it isn’t on the radar</summary>
+    <p>Aircraft show up when their transponder is picked up by receivers on the ground, so coverage varies by area and altitude. Many military, government and private aircraft hide their position or don’t broadcast one. Also check your radius (Settings → Radar) and, for helicopters, that Show helicopters is on.</p>
+  </details>
+
+  <details>
+    <summary>The icons point the wrong way</summary>
+    <p>The radar turns with your iPhone’s compass. Move away from magnets, metal tables and car mounts, then wave the phone in a slow figure-eight to recalibrate it. Make sure Settings → Privacy &amp; Security → Location Services → System Services → Compass Calibration is on.</p>
+  </details>
+
+  <details>
+    <summary>Sky View labels don’t line up with the planes</summary>
+    <p>Sky View uses the compass too, so calibrate it as above. Hold the phone upright, give it a second to settle, and line an aircraft up in the circle to lock on. Once it locks, Sky View corrects its aim for every other label.</p>
+  </details>
+
+  <details>
+    <summary>How do I put the radar on my Apple TV?</summary>
+    <p>Open What The Flight? on your Apple TV. On your iPhone, go to Settings → Apple TV and match the four-digit code on the TV. Both need to be on the same Wi-Fi. The iPhone sends your location and the direction the TV faces. You can also search for an address on the TV itself.</p>
+  </details>
+
+  <details>
+    <summary>My logbook isn’t syncing between devices</summary>
+    <p>Turn on Settings → Logbook → Sync with iCloud on each device, and check you’re signed in to the same Apple Account with iCloud Drive on. New sightings can take a minute to appear on your other devices.</p>
+  </details>
+
+  <details>
+    <summary>Why is an aircraft olive, or marked with a colored dot?</summary>
+    <p>Olive aircraft are military. A colored dot means something notable: an emergency squawk, a government or air ambulance flight, or a rare type. Tap it for the details.</p>
+  </details>
+
+  <details>
+    <summary>Point &amp; Find on Apple Watch sends me the wrong way</summary>
+    <p>On the Watch, open Settings → Identify &amp; Find and turn on Reverse arm direction. If the text reads upside down while pointing, turn on Turn screen around.</p>
+  </details>
+
+  <details>
+    <summary>Does Sky Watch use a lot of battery?</summary>
+    <p>Sky Watch keeps location running in the background so it can alert you while the phone is locked, so it uses more battery than the app does when it’s closed. It stops on its own after two hours, and you can stop it from the Lock Screen at any time.</p>
+  </details>
+
+  <details>
+    <summary>Does it work offline?</summary>
+    <p>No. The radar needs an internet connection for live traffic. Your logbook and photos are always available offline.</p>
+  </details>
+
+  <div class="contact">
+    <h2>Still stuck?</h2>
+    <p>Email <a href="mailto:[your support email]">[your support email]</a>. Tell me which device you’re using and what you expected to see, and I’ll get back to you.</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <a class="brand" href="./"><img src="img/icon-512.png" alt="" width="28" height="28"><span>What The Flight?</span></a>
+      <nav aria-label="Footer"><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
+    </div>
+    <p>Flight data from Flightradar24. Aircraft photos from Planespotters.net, credited to each photographer. Airline data from OpenFlights (ODbL) and airport data from OurAirports.</p>
+    <p>What The Flight? is for curiosity, not navigation. © 2026 Josh Sargent.</p>
+  </div>
+</footer>
+
+</body>
+</html>
