@@ -392,8 +392,9 @@ figcaption b { color: var(--value); font-weight: 600; }
     0 0 0 1px rgba(0, 0, 0, 0.6),
     0 60px 100px -40px rgba(0, 0, 0, 0.95);
 }
-.tv img { border-radius: 0.7% / 1.25%; transition: opacity 0.25s ease; }
-.tv img.is-swapping { opacity: 0.15; }
+.tv img { border-radius: 0.7% / 1.25%; }
+[data-switcher-screen] { transition: opacity 0.25s ease; }
+[data-switcher-screen].is-swapping { opacity: 0.15; }
 
 /* Two phones, one in front of the other. */
 .pair { display: grid; grid-template-areas: "stack"; justify-items: center; align-items: center; padding: 30px 0; }
@@ -509,18 +510,16 @@ figcaption b { color: var(--value); font-weight: 600; }
 }
 
 /* ------------------------------------------------------------------------------------------
-   Logbook + alerts */
+   Logbook (a phone with its pages as tabs underneath) and alerts */
 
-.duo {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(56px, 7vw, 110px);
+.showcase { display: flex; flex-direction: column; align-items: center; justify-self: center; }
+.showcase .phone { --w: clamp(240px, 22vw, 290px); }
+.showcase-caption {
+  max-width: 22rem; min-height: 3em; margin: 18px 0 0;
+  font-size: 15px; line-height: 1.5; text-align: center; color: var(--text-2);
 }
-.duo-col { display: flex; flex-direction: column; }
-.duo h2 { font-size: clamp(30px, 3.3vw, 42px); }
-.duo .pair, .duo .lockphone { margin-top: auto; }
-.duo .pair { padding-top: 56px; }
-.duo .pair .phone { --w: clamp(190px, 17vw, 240px); }
-.duo .lockphone { --w: clamp(240px, 21vw, 290px); align-self: center; margin-top: 56px; }
+
+.lockphone { --w: clamp(240px, 22vw, 290px); justify-self: center; }
 
 .lock-screen {
   position: relative; isolation: isolate; overflow: hidden;
@@ -603,23 +602,24 @@ figcaption b { color: var(--value); font-weight: 600; }
 .watches figcaption { max-width: 17rem; margin-top: 34px; text-align: center; }
 
 .night .tv { margin-top: clamp(48px, 6vw, 72px); }
-.tv-views { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 28px; }
-.tv-views button {
+.tv-views, .showcase-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 28px; }
+.tv-views button, .showcase-tabs button {
   display: flex; flex-direction: column; align-items: center; gap: 9px;
   padding: 0; border: 0; background: none; cursor: pointer;
   font: 600 13px var(--mono); color: var(--caption);
 }
-.tv-views button:focus-visible { outline: none; }
-.tv-views img {
+.tv-views button:focus-visible, .showcase-tabs button:focus-visible { outline: none; }
+.tv-views img, .showcase-tabs img {
   display: block; width: clamp(104px, 13vw, 168px); height: auto; aspect-ratio: 16 / 9; object-fit: cover;
   border-radius: 8px; opacity: 0.5;
   outline: 2px solid transparent; outline-offset: 3px;
   transition: opacity 0.2s ease, outline-color 0.2s ease;
 }
-.tv-views button:hover img { opacity: 0.8; }
-.tv-views button[aria-selected="true"] img { opacity: 1; outline-color: var(--ink); }
-.tv-views button[aria-selected="true"] span { color: var(--value); }
-.tv-views button:focus-visible img { outline-color: var(--signal); }
+.showcase-tabs img { width: 76px; aspect-ratio: 3 / 4; object-position: top; border-radius: 10px; }
+:is(.tv-views, .showcase-tabs) button:hover img { opacity: 0.8; }
+:is(.tv-views, .showcase-tabs) button[aria-selected="true"] img { opacity: 1; outline-color: var(--ink); }
+:is(.tv-views, .showcase-tabs) button[aria-selected="true"] span { color: var(--value); }
+:is(.tv-views, .showcase-tabs) button:focus-visible img { outline-color: var(--signal); }
 
 /* ------------------------------------------------------------------------------------------
    Close and footer */
@@ -722,10 +722,9 @@ figcaption b { color: var(--value); font-weight: 600; }
    Smaller screens */
 
 @media (max-width: 920px) {
-  .split, .duo { grid-template-columns: minmax(0, 1fr); }
+  .split { grid-template-columns: minmax(0, 1fr); }
   .split.reverse > :first-child { order: 0; }
-  .split > .pair, .split > .tablet, .split > .pass-shadow { margin-top: 8px; }
-  .duo .pair, .duo .lockphone { margin-top: 40px; }
+  .split > .pair, .split > .tablet, .split > .pass-shadow, .split > .showcase, .split > .lockphone { margin-top: 8px; }
 }
 
 @media (max-width: 760px) {
@@ -758,8 +757,7 @@ figcaption b { color: var(--value); font-weight: 600; }
   .watches { grid-auto-columns: 70%; }
   .watches .watch { --w: 180px; }
   .pair .phone { --w: min(54vw, 230px); }
-  .duo .pair .phone { --w: min(54vw, 220px); }
-  .duo .lockphone { --w: min(76vw, 290px); }
+  .showcase .phone, .lockphone { --w: min(70vw, 280px); }
   .tablet { --w: min(100%, 420px); }
 }
 

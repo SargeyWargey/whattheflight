@@ -1,4 +1,4 @@
-// Day / night toggle and the Apple TV view switcher.
+// Day / night toggle and the picture switchers.
 
 (function () {
   'use strict';
@@ -28,31 +28,52 @@
     label();
   }
 
-  const tv = document.querySelector('[data-tv-screen]');
-  const tabs = [...document.querySelectorAll('.tv-views [role=tab]')];
-  tabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => select(tab));
-    tab.addEventListener('keydown', (e) => {
-      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-      if (!step) return;
-      e.preventDefault();
-      const next = tabs[(i + step + tabs.length) % tabs.length];
-      next.focus();
-      select(next);
-    });
-    tab.tabIndex = tab.getAttribute('aria-selected') === 'true' ? 0 : -1;
-  });
+  // Picture switchers (the logbook pages, the Apple TV views): tabs under one screen. A tab
+  // with data-src-dark shows that picture in the night look.
+  document.querySelectorAll('[data-switcher]').forEach((group) => {
+    const screen = group.querySelector('[data-switcher-screen]');
+    const caption = group.querySelector('[data-switcher-caption]');
+    const tabs = [...group.querySelectorAll('[role=tab]')];
+    if (!screen || !tabs.length) return;
+    const srcOf = (tab) => (isNight() && tab.dataset.srcDark) || tab.dataset.src;
+    const selected = () => tabs.find((t) => t.getAttribute('aria-selected') === 'true') || tabs[0];
 
-  function select(tab) {
-    if (!tv || tab.getAttribute('aria-selected') === 'true') return;
-    tabs.forEach((t) => { t.setAttribute('aria-selected', String(t === tab)); t.tabIndex = t === tab ? 0 : -1; });
-    tv.classList.add('is-swapping');
-    const next = new Image();
-    next.onload = next.onerror = () => {
-      tv.src = tab.dataset.src;
-      tv.alt = tab.dataset.alt;
-      requestAnimationFrame(() => tv.classList.remove('is-swapping'));
-    };
-    next.src = tab.dataset.src;
-  }
+    function show(tab) {
+      tabs.forEach((t) => { t.setAttribute('aria-selected', String(t === tab)); t.tabIndex = t === tab ? 0 : -1; });
+      if (caption && tab.dataset.caption) caption.textContent = tab.dataset.caption;
+      const src = srcOf(tab);
+      if (screen.getAttribute('src') === src) return;
+      screen.classList.add('is-swapping');
+      const next = new Image();
+      next.onload = next.onerror = () => {
+        screen.src = src;
+        screen.alt = tab.dataset.alt || '';
+        requestAnimationFrame(() => screen.classList.remove('is-swapping'));
+      };
+      next.src = src;
+    }
+
+    function followTheme() {
+      tabs.forEach((t) => {
+        const thumb = t.querySelector('img');
+        if (thumb && t.dataset.srcDark && thumb.getAttribute('src') !== srcOf(t)) thumb.src = srcOf(t);
+      });
+      show(selected());
+    }
+    window.addEventListener('wtf:theme', followTheme);
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => show(tab));
+      tab.addEventListener('keydown', (e) => {
+        const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        const next = tabs[(i + step + tabs.length) % tabs.length];
+        next.focus();
+        show(next);
+      });
+    });
+
+    followTheme();
+  });
 })();
