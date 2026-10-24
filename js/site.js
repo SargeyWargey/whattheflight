@@ -3,30 +3,28 @@
 (function () {
   'use strict';
 
+  // Night by default (set in each page's <head>); day once someone switches.
   const root = document.documentElement;
-  const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  const isNight = () => root.dataset.theme ? root.dataset.theme === 'dark' : darkQuery.matches;
+  const isNight = () => root.dataset.theme !== 'light';
+  const themeColor = document.querySelector('meta[name="theme-color"]');
 
   const toggle = document.querySelector('[data-theme-toggle]');
   function label() {
     if (!toggle) return;
     toggle.setAttribute('aria-label', isNight() ? 'Switch to the day radar' : 'Switch to the night radar');
     toggle.dataset.night = isNight() ? 'true' : 'false';
+    if (themeColor) themeColor.content = isNight() ? '#0A0E14' : '#E9E7E2';
   }
   if (toggle) {
     toggle.addEventListener('click', () => {
-      const next = isNight() ? 'light' : 'dark';
-      // Back to following the system when the choice matches it.
-      if ((next === 'dark') === darkQuery.matches) delete root.dataset.theme;
-      else root.dataset.theme = next;
+      root.dataset.theme = isNight() ? 'light' : 'dark';
       try {
-        if (root.dataset.theme) localStorage.setItem('wtf.theme', root.dataset.theme);
+        if (root.dataset.theme === 'light') localStorage.setItem('wtf.theme', 'light');
         else localStorage.removeItem('wtf.theme');
       } catch (e) { /* private mode: the choice lasts until reload */ }
       label();
       window.dispatchEvent(new Event('wtf:theme'));
     });
-    darkQuery.addEventListener('change', label);
     label();
   }
 

@@ -12,7 +12,6 @@
   const edge = hero.querySelector('.radar-edge');
   const bezel = hero.querySelector('.radar-bezel');
   const flightEl = hero.querySelector('.flight');
-  const countEl = hero.querySelector('[data-demo-count]');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   const RADIUS = 12;        // miles
@@ -20,34 +19,25 @@
   const MPS_PER_KT = 1.15078 / 3600;
 
   // [ident, operator, from, fromCity, to, toCity, typeCode, typeName, glyph, feet, fpm, kts, tag]
+  // Five on screen at once, one of each kind; a plane that leaves is replaced by another of its kind.
   const POOL = [
     ['AC718', 'Air Canada', 'YYZ', 'Toronto', 'LGA', 'New York', 'BCS3', 'Airbus A220-300', 'airliner', 3575, -700, 205],
-    ['B6819', 'JetBlue', 'DTW', 'Detroit', 'JFK', 'New York', 'BCS3', 'Airbus A220-300', 'airliner', 16475, -1850, 329],
+    ['B6371', 'JetBlue', 'LGA', 'New York', 'FLL', 'Fort Lauderdale', 'A321', 'Airbus A321', 'airliner', 2400, 3000, 190],
+    ['AA1136', 'American Airlines', 'MIA', 'Miami', 'LGA', 'New York', 'A321', 'Airbus A321', 'airliner', 5300, -1000, 240],
+    ['UA598', 'United Airlines', 'LGA', 'New York', 'ORD', 'Chicago', 'B38M', 'Boeing 737 MAX 8', 'airliner', 10400, 1900, 285],
     ['UA70', 'United Airlines', 'EWR', 'Newark', 'AMS', 'Amsterdam', 'B764', 'Boeing 767-400', 'widebody', 7900, 1900, 266],
-    ['DL5721', 'Delta Air Lines', 'BOS', 'Boston', 'LGA', 'New York', 'E75L', 'Embraer E175', 'regional', 3575, -650, 255],
+    ['BA117', 'British Airways', 'LHR', 'London', 'JFK', 'New York', 'A35K', 'Airbus A350-1000', 'widebody', 11250, -1400, 290],
+    ['UA994', 'United Airlines', 'EWR', 'Newark', 'BRU', 'Brussels', 'B78X', 'Boeing 787-10', 'widebody', 7200, 2100, 260],
     ['LH403', 'Lufthansa', 'EWR', 'Newark', 'FRA', 'Frankfurt', 'B748', 'Boeing 747-8', 'fourEngine', 7325, 2200, 281, 'rare'],
     ['5Y855', 'Atlas Air', 'ORD', 'Chicago', 'JFK', 'New York', 'B744', 'Boeing 747-400', 'fourEngine', 15950, -1500, 300, 'rare'],
-    ['UA994', 'United Airlines', 'EWR', 'Newark', 'BRU', 'Brussels', 'B78X', 'Boeing 787-10', 'widebody', 7200, 2100, 260],
-    ['B6371', 'JetBlue', 'LGA', 'New York', 'FLL', 'Fort Lauderdale', 'A321', 'Airbus A321', 'airliner', 2400, 3000, 190],
-    ['OS38', 'Austrian Airlines', 'EWR', 'Newark', 'VIE', 'Vienna', 'B772', 'Boeing 777-200', 'widebody', 7975, 1800, 263],
+    ['DL5721', 'Delta Air Lines', 'BOS', 'Boston', 'LGA', 'New York', 'E75L', 'Embraer E175', 'regional', 3575, -650, 255],
     ['AA4607', 'American Eagle', 'ATL', 'Atlanta', 'LGA', 'New York', 'E170', 'Embraer E170', 'regional', 4200, -900, 230],
-    ['DL1538', 'Delta Air Lines', 'MSP', 'Minneapolis', 'LGA', 'New York', 'B739', 'Boeing 737-900', 'airliner', 2550, -800, 180],
-    ['BA117', 'British Airways', 'LHR', 'London', 'JFK', 'New York', 'A35K', 'Airbus A350-1000', 'widebody', 11250, -1400, 290],
-    ['AF22', 'Air France', 'JFK', 'New York', 'CDG', 'Paris', 'A359', 'Airbus A350-900', 'widebody', 9800, 2300, 285],
-    ['AA1136', 'American Airlines', 'MIA', 'Miami', 'LGA', 'New York', 'A321', 'Airbus A321', 'airliner', 5300, -1000, 240],
-    ['DL964', 'Delta Air Lines', 'LGA', 'New York', 'ATL', 'Atlanta', 'A321', 'Airbus A321', 'airliner', 6225, 2400, 250],
-    ['UA3538', 'United Express', 'EWR', 'Newark', 'CLT', 'Charlotte', 'E75L', 'Embraer E175', 'regional', 12900, 1700, 280],
-    ['AS50', 'Alaska Airlines', 'SEA', 'Seattle', 'JFK', 'New York', 'A21N', 'Airbus A321neo', 'airliner', 8650, -1200, 270],
-    ['N91ME', 'Private aircraft', null, null, null, null, 'GLF4', 'Gulfstream IV', 'bizjet', 21000, 1500, 340],
-    ['N410CK', 'Private aircraft', null, null, null, null, 'C172', 'Cessna 172 Skyhawk', 'light', 1500, 0, 105],
-    ['N917PD', 'NYPD Aviation', null, null, null, null, 'B412', 'Bell 412', 'helicopter', 900, 0, 95, 'government'],
-    ['RCH455', 'US Air Force', 'DOV', 'Dover', 'MGE', 'Marietta', 'C17', 'Boeing C-17 Globemaster III', 'militaryTransport', 18300, 600, 320, 'military'],
-    ['EJA344', 'NetJets', 'TEB', 'Teterboro', 'PBI', 'West Palm Beach', 'C68A', 'Cessna Citation Latitude', 'bizjet', 6800, 2600, 240],
     ['DL5809', 'Delta Connection', 'PWM', 'Portland', 'LGA', 'New York', 'E170', 'Embraer E170', 'regional', 3575, -700, 251],
-    ['UA598', 'United Airlines', 'LGA', 'New York', 'ORD', 'Chicago', 'B38M', 'Boeing 737 MAX 8', 'airliner', 10400, 1900, 285],
+    ['N407LH', 'Liberty Helicopters', null, null, null, null, 'B407', 'Bell 407', 'helicopter', 1000, 0, 105],
+    ['N350NY', 'HeliNY', null, null, null, null, 'AS50', 'Airbus H125', 'helicopter', 1200, 0, 110],
   ];
 
-  const BADGES = { rare: (f) => `Rare · ${f.typeName.replace(/^Boeing /, '')}`, military: () => 'Military', government: () => 'Government' };
+  const BADGES = { rare: (f) => `Rare · ${f.typeName.replace(/^Boeing /, '')}` };
 
   // ---------------------------------------------------------------------------------------
   // Traffic
@@ -73,10 +63,8 @@
 
   // A fixed opening scene: Air Canada on approach to LaGuardia just overhead, the rest spread round.
   const OPENING = [
-    ['AC718', 1.6, 212, 60], ['B6819', 2.4, 65, 250], ['UA70', 8.5, 250, 75], ['DL5721', 4.1, 20, 215],
-    ['LH403', 6.8, 300, 65], ['N917PD', 3.2, 150, 20], ['UA994', 9.5, 205, 40], ['BA117', 10.5, 95, 260],
-    ['RCH455', 11.2, 330, 140], ['AA1136', 7.3, 175, 5], ['DL964', 5.6, 245, 220], ['N410CK', 8.2, 120, 300],
-    ['AS50', 10.2, 280, 100], ['EJA344', 6.1, 340, 190], ['5Y855', 9.0, 40, 230], ['UA3538', 11.0, 230, 230],
+    ['AC718', 1.6, 212, 60], ['N407LH', 3.4, 150, 20], ['DL5721', 5.5, 105, 250],
+    ['LH403', 8.5, 20, 65], ['UA70', 7.5, 290, 75],
   ];
 
   const byIdent = Object.fromEntries(POOL.map((row) => [row[0], row]));
@@ -85,7 +73,7 @@
 
   function respawn(old) {
     const used = new Set(traffic.map((t) => t.ident));
-    const free = POOL.filter((row) => !used.has(row[0]));
+    const free = POOL.filter((row) => row[8] === old.glyph && !used.has(row[0]));
     const row = free[Math.floor(rand() * free.length)] || byIdent[old.ident];
     const bearing = rand() * 360;
     const miles = RADIUS * (0.98 + rand() * 0.04);
@@ -114,16 +102,6 @@
       }
       return p;
     });
-  }
-
-  /// Closest point of approach, in miles and wall-clock seconds; null once it's behind.
-  function closestPass(p) {
-    const v = p.kts * MPS_PER_KT;
-    const vx = v * Math.sin(rad(p.track));
-    const vy = v * Math.cos(rad(p.track));
-    const t = -(p.x * vx + p.y * vy) / (vx * vx + vy * vy || 1);
-    if (t <= 0) return null;
-    return { miles: Math.hypot(p.x + vx * t, p.y + vy * t), seconds: t / TIME_SCALE };
   }
 
   // ---------------------------------------------------------------------------------------
@@ -348,7 +326,6 @@
       if (mi.textContent !== text) mi.textContent = text;
       p.el.setAttribute('aria-label', `${p.ident}, ${p.operator}, ${milesSpoken(d)} ${cardinal(bearingOf(p))}. Bring to the center.`);
     }
-    if (countEl) countEl.textContent = inRange.length;
   }
 
   // ---------------------------------------------------------------------------------------
@@ -384,16 +361,6 @@
       trend.dataset.trend = f.fpm > 300 ? 'up' : f.fpm < -300 ? 'down' : '';
       q('[data-f=kts]').textContent = fmt(f.kts);
       q('[data-f=miles]').textContent = milesText(d);
-      const pass = closestPass(f);
-      const approach = q('[data-f=approach]');
-      if (pass && pass.seconds < 900) {
-        const s = Math.round(pass.seconds);
-        approach.dataset.state = 'pass';
-        approach.querySelector('span').textContent = `Closest pass ${milesText(pass.miles)} mi in ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-      } else {
-        approach.dataset.state = 'away';
-        approach.querySelector('span').textContent = 'Moving away';
-      }
       flightEl.setAttribute('aria-label', `${f.operator} ${f.ident}${f.from ? `, ${f.fromCity} to ${f.toCity}` : ''}, ${f.typeName}, ${fmt(f.feet)} feet, ${milesSpoken(d)} ${cardinal(bearingOf(f))}`);
       shownIdent = f.ident;
     };

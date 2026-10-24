@@ -8,8 +8,7 @@
 <title>What The Flight?</title>
 <meta name="description" content="Every aircraft in the sky around you, live, on a radar that turns as you turn. For iPhone, iPad, Apple Watch and Apple TV.">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#E9E7E2" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0A0E14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0A0E14">
 <meta property="og:title" content="What The Flight?">
 <meta property="og:description" content="Every aircraft in the sky around you, live, on a radar that turns as you turn.">
 <meta property="og:type" content="website">
@@ -23,8 +22,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
 <link rel="stylesheet" href="css/site.css">
 <script>
-  // Day or night, remembered per browser. Without a choice the page follows the system.
-  try { const t = localStorage.getItem('wtf.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  // Night by default; a switch to day is remembered per browser.
+  document.documentElement.dataset.theme = 'dark';
+  try { if (localStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
 </script>
 <script src="js/glyphs.js" defer></script>
 <script src="js/topography.js" defer></script>
@@ -63,7 +63,7 @@
   </header>
 
   <div class="hero-body">
-    <h1>What’s that plane?</h1>
+    <h1 class="visually-hidden">What The Flight? Live radar of the planes overhead</h1>
 
     <div class="flight" role="group" aria-label="Air Canada AC718, Toronto to New York, Airbus A220-300">
       <p class="flight-operator" data-f="operator">Air Canada</p>
@@ -83,7 +83,6 @@
         <div><dt>Speed</dt><dd><span data-f="kts">205</span><small>kts</small></dd></div>
         <div><dt>Distance</dt><dd><span data-f="miles">2</span><small>mi</small><svg class="pointer" data-f="pointer" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 19.5 21 12 16.8 4.5 21Z"/></svg></dd></div>
       </dl>
-      <p class="flight-approach" data-f="approach" data-state="away"><svg viewBox="0 0 16 16" aria-hidden="true"><path class="away" d="M4 12 12 4M6 4h6v6"/><g class="scope"><circle cx="8" cy="8" r="5"/><path d="M8 1v3M8 12v3M1 8h3M12 8h3"/></g></svg><span>Moving away</span></p>
     </div>
 
     <p class="lead">Every aircraft in the sky around you, live, on a radar that turns as you turn.</p>
@@ -91,7 +90,6 @@
       <span class="store-pill"><i aria-hidden="true"></i>Coming soon to the App Store</span>
       <span class="platforms">For iPhone, iPad, Apple Watch and Apple TV</span>
     </div>
-    <p class="demo-note"><span class="demo-pill">Demo <b data-demo-count>16</b></span><span class="demo-hint">Simulated traffic. Tap a plane on the edge to bring it in, or drag to turn.</span></p>
   </div>
 
   <div class="radar-edge" role="group" aria-label="Aircraft around you"></div>

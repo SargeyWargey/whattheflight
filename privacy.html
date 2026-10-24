@@ -8,8 +8,7 @@
 <title>Privacy · What The Flight?</title>
 <meta name="description" content="The What The Flight? privacy policy: no accounts, no ads, no tracking.">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#E9E7E2" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0A0E14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0A0E14">
 <link rel="icon" href="img/favicon.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +16,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
 <link rel="stylesheet" href="css/site.css">
 <script>
-  try { const t = localStorage.getItem('wtf.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  document.documentElement.dataset.theme = 'dark';
+  try { if (localStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
 </script>
 <script src="js/topography.js" defer></script>
 <script src="js/site.js" defer></script>

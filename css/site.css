@@ -66,6 +66,11 @@ a { color: var(--ink); }
 
 :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 6px; }
 
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
 .skip {
   position: absolute; left: 16px; top: -60px; z-index: 10;
   padding: 10px 16px; border-radius: 999px;
@@ -182,16 +187,8 @@ canvas.topo.is-drawn { opacity: 1; }
   text-align: center;
   pointer-events: none;
 }
-.hero-body h1,
 .hero-body p,
 .hero-body dl { text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper), 0 0 12px var(--paper); }
-
-.hero h1 {
-  margin: 0 0 clamp(14px, 2.6vh, 32px);
-  font: 700 clamp(22px, 2.3vw, 30px)/1.2 var(--sans);
-  letter-spacing: -0.015em;
-  color: var(--value);
-}
 
 .flight { transition: opacity 0.18s ease, transform 0.18s ease; }
 .flight.is-swapping { opacity: 0; transform: translateY(5px); }
@@ -257,19 +254,6 @@ canvas.topo.is-drawn { opacity: 1; }
 .trend[data-trend=""] { display: none; }
 .pointer { fill: var(--signal); }
 
-.flight-approach {
-  display: inline-flex; align-items: center; gap: 8px;
-  margin-top: clamp(10px, 1.8vh, 18px) !important; padding: 6px 14px; border-radius: 999px;
-  font: 500 14px var(--mono); color: var(--caption);
-}
-.flight-approach svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
-.flight-approach[data-state="away"] .scope,
-.flight-approach[data-state="pass"] .away { display: none; }
-.flight-approach[data-state="pass"] {
-  color: var(--ink); font-weight: 700; text-shadow: none;
-  background: color-mix(in srgb, var(--ink) 12%, var(--paper));
-}
-
 .hero .lead {
   max-width: 27em; margin: clamp(18px, 3.2vh, 40px) auto 0;
   font: 400 clamp(17px, 1.45vw, 20px)/1.5 var(--sans);
@@ -292,17 +276,6 @@ canvas.topo.is-drawn { opacity: 1; }
   background: var(--live); box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 28%, transparent);
 }
 .platforms { font: 500 13px var(--mono); color: var(--caption); }
-
-.demo-note {
-  display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
-  margin: clamp(16px, 2.6vh, 32px) 0 0 !important;
-  font: 500 12.5px/1.4 var(--mono); color: var(--caption);
-}
-.demo-pill {
-  flex: none; padding: 4px 10px; border-radius: 999px;
-  background: var(--ink); color: var(--paper); text-shadow: none;
-  font: 800 11px var(--mono); letter-spacing: 0.12em; text-transform: uppercase;
-}
 
 /* ------------------------------------------------------------------------------------------
    Sections */
@@ -759,7 +732,6 @@ figcaption b { color: var(--value); font-weight: 600; }
   .site-nav a:not(:last-child) { display: none; }
   .hero { min-height: max(620px, 100svh); }
   .hero-body { padding: 40px 56px 78px; }
-  .hero h1 { margin-bottom: 12px; font-size: 21px; }
   .flight-ident { margin: 2px 0 8px !important; font-size: clamp(52px, 15vw, 64px); }
   .airport b { font-size: 34px; }
   .airport small { margin-top: 5px; font-size: 11px; }
@@ -770,13 +742,10 @@ figcaption b { color: var(--value); font-weight: 600; }
   .flight-stats > div:last-child { grid-column: 1 / -1; }
   .flight-stats dt { font-size: 11px; }
   .flight-stats dd { font-size: 20px; margin-top: 2px; }
-  .flight-approach { margin-top: 10px !important; font-size: 13px; padding: 5px 12px; }
   .hero .lead { margin-top: 16px; font-size: 16px; }
   .hero-actions { margin-top: 14px; gap: 8px; }
   .store-pill { padding: 8px 14px; gap: 8px; font-size: 12.5px; }
   .platforms { display: none; }
-  .demo-note { margin-top: 14px !important; font-size: 11.5px; }
-  .demo-hint { flex-basis: 100%; }
 
   /* Galleries become a row you can swipe. */
   .gallery, .watches {
