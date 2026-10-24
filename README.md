@@ -39,13 +39,16 @@ served by GitHub Pages from `main` at https://sargeywargey.github.io/whattheflig
 address the App Store listing (`AppStore/2 Store Listing.md`) uses, with `support.html` and
 `privacy.html` beside it. The app's repository ignores this folder.
 
-To publish a change, commit and push:
+To publish a change, run:
 
 ```sh
-git add -A && git commit -m "Describe the change" && git push
+./publish.sh "Describe the change"
 ```
 
-The live site updates a minute or so later.
+It stamps the CSS and JS links in every page with a new `?v=` version, then commits and pushes.
+The live site updates a minute or so later. Use it rather than a plain `git push`: GitHub Pages
+lets browsers keep files for 10 minutes, and without a new version a visitor can get the new page
+with an old script.
 
 **While it's a preview**, every page has `<meta name="robots" content="noindex, nofollow">` so search
 engines don't list it. Delete that line (and the comment above it) from `index.html`,

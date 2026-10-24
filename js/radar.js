@@ -331,7 +331,10 @@
   // ---------------------------------------------------------------------------------------
   // The flight in the center
 
+  // Every lookup tolerates a missing element, so a page and script from different versions
+  // (a browser cache can mix them for a few minutes after an update) still run.
   const q = (sel) => flightEl.querySelector(sel);
+  const setText = (name, value) => { const el = q(`[data-f=${name}]`); if (el && el.textContent !== value) el.textContent = value; };
   const fmt = (n) => Math.round(n).toLocaleString('en-US');
   let shownIdent = null;
 
@@ -341,26 +344,28 @@
     const changed = f.ident !== shownIdent;
     const apply = () => {
       const d = distance(f);
-      q('[data-f=operator]').textContent = f.operator;
-      q('[data-f=ident]').textContent = f.ident;
+      setText('operator', f.operator);
+      setText('ident', f.ident);
       const route = q('.flight-route');
-      route.hidden = !f.from;
+      if (route) route.hidden = !f.from;
       if (f.from) {
-        q('[data-f=from]').textContent = f.from;
-        q('[data-f=fromCity]').textContent = f.fromCity;
-        q('[data-f=to]').textContent = f.to;
-        q('[data-f=toCity]').textContent = f.toCity;
+        setText('from', f.from);
+        setText('fromCity', f.fromCity);
+        setText('to', f.to);
+        setText('toCity', f.toCity);
       }
-      q('[data-f=type]').textContent = f.type;
-      q('[data-f=typeName]').textContent = f.typeName;
+      setText('type', f.type);
+      setText('typeName', f.typeName);
       const badge = q('[data-f=badge]');
-      badge.hidden = !f.tag;
-      if (f.tag) { badge.textContent = BADGES[f.tag](f); badge.dataset.tag = f.tag; }
-      q('[data-f=feet]').textContent = fmt(Math.round(f.feet / 25) * 25);
+      if (badge) {
+        badge.hidden = !f.tag;
+        if (f.tag) { badge.textContent = BADGES[f.tag](f); badge.dataset.tag = f.tag; }
+      }
+      setText('feet', fmt(Math.round(f.feet / 25) * 25));
       const trend = q('[data-f=trend]');
-      trend.dataset.trend = f.fpm > 300 ? 'up' : f.fpm < -300 ? 'down' : '';
-      q('[data-f=kts]').textContent = fmt(f.kts);
-      q('[data-f=miles]').textContent = milesText(d);
+      if (trend) trend.dataset.trend = f.fpm > 300 ? 'up' : f.fpm < -300 ? 'down' : '';
+      setText('kts', fmt(f.kts));
+      setText('miles', milesText(d));
       flightEl.setAttribute('aria-label', `${f.operator} ${f.ident}${f.from ? `, ${f.fromCity} to ${f.toCity}` : ''}, ${f.typeName}, ${fmt(f.feet)} feet, ${milesSpoken(d)} ${cardinal(bearingOf(f))}`);
       shownIdent = f.ident;
     };
@@ -375,8 +380,9 @@
   // The distance arrow points at the aircraft, relative to the top of the screen.
   function pointArrow(h) {
     const f = traffic.find((p) => p.ident === focusIdent);
-    if (!f) return;
-    q('[data-f=pointer]').style.transform = `rotate(${norm(bearingOf(f) - h).toFixed(1)}deg)`;
+    const arrow = q('[data-f=pointer]');
+    if (!f || !arrow) return;
+    arrow.style.transform = `rotate(${norm(bearingOf(f) - h).toFixed(1)}deg)`;
   }
 
   // ---------------------------------------------------------------------------------------
@@ -387,20 +393,24 @@
 
   new IntersectionObserver((entries) => { visible = entries[0].isIntersecting; }).observe(hero);
 
+  /// Runs `work`, logging rather than throwing, so one failing part can't stop the radar.
+  function guarded(work) {
+    try { work(); } catch (error) { console.warn('Radar:', error); }
+  }
+
   function frame(now) {
+    requestAnimationFrame(frame);
     const dt = Math.min(0.25, (now - last) / 1000) * TIME_SCALE;
     last = now;
-    if (visible && !document.hidden) {
-      step(dt);
-      const h = layout(now);
-      pointArrow(h);
-      if (now - lastTick > 1000) {
-        lastTick = now;
-        labels();
-        renderFlight(true);
-      }
+    if (!visible || document.hidden) return;
+    let h = 0;
+    guarded(() => { step(dt); h = layout(now); });
+    guarded(() => pointArrow(h));
+    if (now - lastTick > 1000) {
+      lastTick = now;
+      guarded(labels);
+      guarded(() => renderFlight(true));
     }
-    requestAnimationFrame(frame);
   }
 
   let resizeTimer = 0;
@@ -411,7 +421,7 @@
   if (document.fonts) document.fonts.ready.then(() => { track = null; });
 
   hero.classList.add('is-live');
-  labels();
-  renderFlight(false);
   requestAnimationFrame(frame);
+  guarded(labels);
+  guarded(() => renderFlight(false));
 })();
