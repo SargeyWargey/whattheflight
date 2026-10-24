@@ -29,25 +29,44 @@
   }
 
   // Picture switchers (the logbook pages, the Apple TV views): tabs under one screen. A tab
-  // with data-src-dark shows that picture in the night look.
+  // with data-src-dark shows that picture in the night look, and one with data-screen shows it
+  // on a different device (the figure with that data-screen-name), fading the others out.
   document.querySelectorAll('[data-switcher]').forEach((group) => {
-    const screen = group.querySelector('[data-switcher-screen]');
     const caption = group.querySelector('[data-switcher-caption]');
     const tabs = [...group.querySelectorAll('[role=tab]')];
-    if (!screen || !tabs.length) return;
+    const screens = [...group.querySelectorAll('[data-switcher-screen]')];
+    if (!screens.length || !tabs.length) return;
+    const devices = [...group.querySelectorAll('[data-screen-name]')];
     const srcOf = (tab) => (isNight() && tab.dataset.srcDark) || tab.dataset.src;
     const selected = () => tabs.find((t) => t.getAttribute('aria-selected') === 'true') || tabs[0];
+    const screenFor = (tab) => {
+      const device = tab.dataset.screen && group.querySelector(`[data-screen-name="${tab.dataset.screen}"]`);
+      return (device && device.querySelector('[data-switcher-screen]')) || screens[0];
+    };
 
     function show(tab) {
       tabs.forEach((t) => { t.setAttribute('aria-selected', String(t === tab)); t.tabIndex = t === tab ? 0 : -1; });
       if (caption && tab.dataset.caption) caption.textContent = tab.dataset.caption;
+      const screen = screenFor(tab);
+      const device = screen.closest('[data-screen-name]');
       const src = srcOf(tab);
-      if (screen.getAttribute('src') === src) return;
+      const reveal = () => {
+        devices.forEach((d) => {
+          d.classList.toggle('is-off', d !== device);
+          d.setAttribute('aria-hidden', String(d !== device));
+        });
+      };
+      if (screen.getAttribute('src') === src) {
+        screen.alt = tab.dataset.alt || screen.alt;
+        reveal();
+        return;
+      }
       screen.classList.add('is-swapping');
       const next = new Image();
       next.onload = next.onerror = () => {
         screen.src = src;
         screen.alt = tab.dataset.alt || '';
+        reveal();
         requestAnimationFrame(() => screen.classList.remove('is-swapping'));
       };
       next.src = src;

@@ -20,16 +20,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
-<link rel="stylesheet" href="css/site.css?v=202610232142">
+<link rel="stylesheet" href="css/site.css?v=202610232150">
 <script>
   // Night by default; a switch to day is remembered per browser.
   document.documentElement.dataset.theme = 'dark';
   try { if (localStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
 </script>
-<script src="js/glyphs.js?v=202610232142" defer></script>
-<script src="js/topography.js?v=202610232142" defer></script>
-<script src="js/radar.js?v=202610232142" defer></script>
-<script src="js/site.js?v=202610232142" defer></script>
+<script src="js/glyphs.js?v=202610232150" defer></script>
+<script src="js/topography.js?v=202610232150" defer></script>
+<script src="js/radar.js?v=202610232150" defer></script>
+<script src="js/site.js?v=202610232150" defer></script>
 </head>
 <body>
 
@@ -119,7 +119,7 @@
 </section>
 
 <!-- iPhone: details and search ---------------------------------------------------------- -->
-<section class="section" id="details">
+<section class="section alt" id="details">
   <div class="wrap">
     <div class="copy wide">
       <h2>The full story, one tap away.</h2>
@@ -194,27 +194,27 @@
 
 <!-- Logbook ---------------------------------------------------------------------------- -->
 <section class="section" id="logbook">
-  <div class="wrap split">
-    <div class="copy">
+  <div class="wrap" data-switcher>
+    <div class="copy wide">
       <h2>Every plane that passes, logged.</h2>
-      <p>Every aircraft that comes inside your radius goes in your logbook: when and where you saw it, how close it came, and whether it was a first. Dig into the numbers, chase records and earn badges, from First Contact to Queen of the Skies.</p>
-      <p>Your logbook and photos sync across iPhone, iPad and Apple TV with iCloud.</p>
+      <p>Every aircraft that comes inside your radius goes in your logbook: when and where you saw it, how close it came, and whether it was a first. Dig into the numbers, chase records and earn badges, from First Contact to Queen of the Skies. It all syncs across iPhone, iPad and Apple TV with iCloud.</p>
     </div>
 
-    <div class="showcase" data-switcher>
-      <figure class="device phone"><img src="img/screens/logbook-overview-dark.webp" alt="The logbook’s overview: today’s highlights, including an Emirates A380 and a US Navy trainer, then totals for aircraft spotted, airframes, types, airlines and countries, and a chart of the last 14 days." width="660" height="1435" loading="lazy" data-switcher-screen></figure>
-      <div class="showcase-tabs" role="tablist" aria-label="Logbook pages">
-        <button type="button" role="tab" aria-selected="true" data-src="img/screens/logbook-overview-light.webp" data-src-dark="img/screens/logbook-overview-dark.webp" data-alt="The logbook’s overview: today’s highlights, including an Emirates A380 and a US Navy trainer, then totals for aircraft spotted, airframes, types, airlines and countries, and a chart of the last 14 days." data-caption="Today’s highlights at the top, then your totals, your streak and the last two weeks."><img src="img/screens/logbook-overview-dark.webp" alt="" loading="lazy"><span>Logbook</span></button>
-        <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-stats-light.webp" data-src-dark="img/screens/logbook-stats-dark.webp" data-alt="Stats: aircraft per day, best day, best hour and best streak, and a compass rose showing that 38% of the aircraft head east." data-caption="Which way they fly, when your sky is busiest, how high they pass, and your records."><img src="img/screens/logbook-stats-dark.webp" alt="" loading="lazy"><span>Stats</span></button>
-        <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-badges-light.webp" data-src-dark="img/screens/logbook-badges-dark.webp" data-alt="Badges: 17 of 25 unlocked, the three closest to unlocking, and recently unlocked badges such as Superjumbo and Around the World." data-caption="Badges to earn, from First Contact to Queen of the Skies, and the ones you’re closest to next."><img src="img/screens/logbook-badges-dark.webp" alt="" loading="lazy"><span>Achievements</span></button>
-      </div>
-      <p class="showcase-caption" data-switcher-caption aria-live="polite">Today’s highlights at the top, then your totals, your streak and the last two weeks.</p>
+    <div class="stage">
+      <figure class="device phone" data-screen-name="phone"><img src="img/screens/logbook-overview-dark.webp" alt="The logbook’s overview: today’s highlights, including an Emirates A380 and a US Navy trainer, then totals for aircraft spotted, airframes, types, airlines and countries, and a chart of the last 14 days." width="660" height="1435" loading="lazy" data-switcher-screen></figure>
+      <figure class="device tablet landscape is-off" data-screen-name="tablet"><img src="img/screens/logbook-stats-ipad-dark.webp" alt="" width="1600" height="1103" loading="lazy" data-switcher-screen></figure>
     </div>
+    <div class="showcase-tabs" role="tablist" aria-label="Logbook pages">
+      <button type="button" role="tab" aria-selected="true" data-screen="phone" data-src="img/screens/logbook-overview-light.webp" data-src-dark="img/screens/logbook-overview-dark.webp" data-alt="The logbook’s overview: today’s highlights, including an Emirates A380 and a US Navy trainer, then totals for aircraft spotted, airframes, types, airlines and countries, and a chart of the last 14 days." data-caption="Today’s highlights at the top, then your totals, your streak and the last two weeks."><img src="img/screens/logbook-overview-dark.webp" alt="" loading="lazy"><span>Logbook</span></button>
+      <button type="button" role="tab" aria-selected="false" data-screen="tablet" data-src="img/screens/logbook-stats-ipad-light.webp" data-src-dark="img/screens/logbook-stats-ipad-dark.webp" data-alt="Stats on iPad in landscape: the logbook sidebar, aircraft per day, best day, best hour and best streak, a large compass rose showing that 38% of the aircraft head east, and charts of the last 30 days and of how high they pass." data-caption="Which way they fly, when your sky is busiest and how high they pass, with room to spread out on iPad."><img src="img/screens/logbook-stats-ipad-dark.webp" alt="" loading="lazy"><span>Stats</span></button>
+      <button type="button" role="tab" aria-selected="false" data-screen="phone" data-src="img/screens/logbook-badges-light.webp" data-src-dark="img/screens/logbook-badges-dark.webp" data-alt="Badges: 17 of 25 unlocked, the three closest to unlocking, and recently unlocked badges such as Superjumbo and Around the World." data-caption="Badges to earn, from First Contact to Queen of the Skies, and the ones you’re closest to next."><img src="img/screens/logbook-badges-dark.webp" alt="" loading="lazy"><span>Achievements</span></button>
+    </div>
+    <p class="showcase-caption" data-switcher-caption aria-live="polite">Today’s highlights at the top, then your totals, your streak and the last two weeks.</p>
   </div>
 </section>
 
 <!-- Alerts ----------------------------------------------------------------------------- -->
-<section class="section" id="alerts">
+<section class="section alt" id="alerts">
   <div class="wrap split reverse">
     <div class="copy">
       <h2>A heads-up for the good stuff.</h2>
@@ -265,7 +265,7 @@
 
 <!-- Night: Apple Watch and Apple TV ---------------------------------------------------- -->
 <div class="night">
-  <canvas class="topo" data-topo="survey night" aria-hidden="true"></canvas>
+  <canvas class="topo" data-topo="survey dusk" aria-hidden="true"></canvas>
 
   <section class="section" id="watch">
     <div class="wrap">

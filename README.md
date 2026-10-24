@@ -69,5 +69,7 @@ The logbook pages (`logbook-overview|stats|badges-light|dark.webp`) come from a 
 iPhone 17 simulator, which holds the logbook from the App Store captures. Each was launched with
 `-wtf.hasSeenWelcome YES -wtf.iCloudLogbook NO -wtf.debugSheet logbook -wtf.debugLogbookTab
 overview` (or `stats`, `badges`), in light and in dark appearance. The Sightings tab is left out
-because it names the places you watched from.
+because it names the places you watched from. `logbook-stats-ipad-light|dark.webp` is the same
+Stats tab on the iPad Pro 11-inch simulator in landscape (`xcrun devicectl device orientation set
+--device <udid> landscapeLeft`), with `-wtf.mapView NO`.
 Frames with Planespotters photos are left out, because those photos belong to their photographers.

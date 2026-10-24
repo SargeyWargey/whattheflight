@@ -19,6 +19,7 @@
   --notable: #B7860B;
   --military: #55692A;
   --rule: #D3D0C8;
+  --paper-alt: #E1DED6;
   --sky-top: #93C2EC;
   --sky-mid: #C9DFF1;
   --frame-shadow: 30, 28, 40;
@@ -34,7 +35,7 @@
     --paper: #0A0E14; --paper-shade: #020306; --ink: #A8A4FF; --route: #8C9BFF; --signal: #FF6B5E;
     --caption: #8790A0; --value: #E7EAF0; --text-2: #AEB5C2; --faint: #465061; --blip: #72AAFF;
     --chip: #273042; --chip-text: #E7EAF0; --live: #3DDC84; --warning: #FFB020; --notable: #FFCB45;
-    --military: #A9C76B; --rule: #222A38; --sky-top: #0C1730; --sky-mid: #18284A; --frame-shadow: 0, 0, 0;
+    --military: #A9C76B; --rule: #222A38; --paper-alt: #111722; --sky-top: #0C1730; --sky-mid: #18284A; --frame-shadow: 0, 0, 0;
     color-scheme: dark;
   }
 }
@@ -44,7 +45,7 @@
   --paper: #0A0E14; --paper-shade: #020306; --ink: #A8A4FF; --route: #8C9BFF; --signal: #FF6B5E;
   --caption: #8790A0; --value: #E7EAF0; --text-2: #AEB5C2; --faint: #465061; --blip: #72AAFF;
   --chip: #273042; --chip-text: #E7EAF0; --live: #3DDC84; --warning: #FFB020; --notable: #FFCB45;
-  --military: #A9C76B; --rule: #222A38; --sky-top: #0C1730; --sky-mid: #18284A; --frame-shadow: 0, 0, 0;
+  --military: #A9C76B; --rule: #222A38; --paper-alt: #111722; --sky-top: #0C1730; --sky-mid: #18284A; --frame-shadow: 0, 0, 0;
   color-scheme: dark;
 }
 
@@ -92,6 +93,7 @@ canvas.topo.is-drawn { opacity: 1; }
   min-height: max(680px, 100svh);
   overflow: hidden;
   background: var(--paper);
+  border-bottom: 1px solid var(--rule);
   touch-action: pan-y;
   -webkit-user-select: none;
   user-select: none;
@@ -281,6 +283,12 @@ canvas.topo.is-drawn { opacity: 1; }
    Sections */
 
 .section { position: relative; padding: clamp(84px, 11vw, 150px) 0; }
+/* Every other section sits on a slightly different paper, edged with a hairline, so each
+   one reads as its own band. */
+.section.alt {
+  background: var(--paper-alt);
+  box-shadow: inset 0 1px var(--rule), inset 0 -1px var(--rule);
+}
 .wrap { width: min(1160px, 100% - 2 * var(--gutter)); margin-inline: auto; }
 
 .copy { max-width: 32rem; }
@@ -419,7 +427,7 @@ figcaption b { color: var(--value); font-weight: 600; }
    Sky View */
 
 .sky {
-  background: linear-gradient(180deg, var(--paper) 0%, var(--sky-mid) 18%, var(--sky-top) 52%, var(--sky-mid) 82%, var(--paper) 100%);
+  background: linear-gradient(180deg, var(--sky-mid) 0%, var(--sky-top) 50%, var(--sky-mid) 100%);
 }
 
 /* The notches are cut with a mask, which would clip a box-shadow, so the shadow is a filter
@@ -512,10 +520,33 @@ figcaption b { color: var(--value); font-weight: 600; }
 /* ------------------------------------------------------------------------------------------
    Logbook (a phone with its pages as tabs underneath) and alerts */
 
-.showcase { display: flex; flex-direction: column; align-items: center; justify-self: center; }
-.showcase .phone { --w: clamp(240px, 22vw, 290px); }
+/* The stage is as tall as the phone, so the tabs stay put while the iPad comes and goes. */
+.stage {
+  --pw: clamp(250px, 24vw, 310px);
+  position: relative;
+  container-type: inline-size;
+  display: grid; place-items: center;
+  height: calc(var(--pw) * 2.235);
+  margin-top: clamp(48px, 6vw, 72px);
+}
+.stage > .device {
+  grid-area: 1 / 1;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0s;
+}
+.stage > .device.is-off {
+  opacity: 0; transform: scale(0.96); visibility: hidden; pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;
+}
+.stage .phone { --w: var(--pw); }
+.tablet.landscape {
+  --w: min(100cqw, var(--pw) * 3.17);
+  padding: calc(var(--w) * 0.02);
+  border-radius: calc(var(--w) * 0.042);
+}
+.tablet.landscape img { border-radius: calc(var(--w) * 0.024); }
+
 .showcase-caption {
-  max-width: 22rem; min-height: 3em; margin: 18px 0 0;
+  max-width: 26rem; min-height: 3em; margin: 18px auto 0;
   font-size: 15px; line-height: 1.5; text-align: center; color: var(--text-2);
 }
 
@@ -582,6 +613,7 @@ figcaption b { color: var(--value); font-weight: 600; }
    Night: Apple Watch and Apple TV */
 
 .night {
+  --paper: #111722;
   position: relative; isolation: isolate;
   background: var(--paper);
   color: var(--value);
@@ -724,7 +756,7 @@ figcaption b { color: var(--value); font-weight: 600; }
 @media (max-width: 920px) {
   .split { grid-template-columns: minmax(0, 1fr); }
   .split.reverse > :first-child { order: 0; }
-  .split > .pair, .split > .tablet, .split > .pass-shadow, .split > .showcase, .split > .lockphone { margin-top: 8px; }
+  .split > .pair, .split > .tablet, .split > .pass-shadow, .split > .lockphone { margin-top: 8px; }
 }
 
 @media (max-width: 760px) {
@@ -757,7 +789,8 @@ figcaption b { color: var(--value); font-weight: 600; }
   .watches { grid-auto-columns: 70%; }
   .watches .watch { --w: 180px; }
   .pair .phone { --w: min(54vw, 230px); }
-  .showcase .phone, .lockphone { --w: min(70vw, 280px); }
+  .stage { --pw: min(66vw, 270px); }
+  .lockphone { --w: min(70vw, 280px); }
   .tablet { --w: min(100%, 420px); }
 }
 

@@ -7,7 +7,7 @@
 //
 //   <canvas class="topo" data-topo="survey paper live"></canvas>
 //
-// data-topo: a style (remaster, survey, highlands, relief), a theme (auto, paper, night, teal),
+// data-topo: a style (remaster, survey, highlands, relief), a theme (auto, paper, night, dusk, teal),
 // and "live" for the Tide animation. Stills are drawn by one shared WebGL context and copied in.
 
 (function () {
@@ -26,6 +26,7 @@
   const THEMES = {
     paper: { paper: rgb('#E9E7E2'), paper2: rgb('#E9E7E2'), ink: [0.30, 0.28, 0.25], dark: 0, boost: 1 },
     night: { paper: rgb('#0A0E14'), paper2: rgb('#0A0E14'), ink: [0.66, 0.72, 0.86], dark: 1, boost: 1 },
+    dusk:  { paper: rgb('#111722'), paper2: rgb('#111722'), ink: [0.66, 0.72, 0.86], dark: 1, boost: 1 },
     teal:  { paper: rgb('#1E545A'), paper2: rgb('#0D2C31'), ink: [0.86, 0.96, 0.96], dark: 1, boost: 1.25 },
   };
 
