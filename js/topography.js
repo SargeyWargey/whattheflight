@@ -9,6 +9,15 @@
 //
 // data-topo: a style (remaster, survey, highlands, relief), a theme (auto, paper, night, dusk, teal),
 // and "live" for the Tide animation. Stills are drawn by one shared WebGL context and copied in.
+//
+//   <canvas class="backdrop" data-backdrop="survey"></canvas>
+//
+// The page backdrop: one map behind the whole page, drawn into a fixed canvas as you scroll.
+// The terrain moves at PARALLAX × the scroll, so it reads as ground far below. Its colors come
+// from the page's bands (elements with data-band; CSS gives each --band-paper, an optional
+// --band-swell, --band-ink and --band-lines). Neighbouring bands blend across their shared
+// edge: the paper as a gradient on <html>, which scrolls with the page, and the line color in
+// the shader.
 
 (function () {
   'use strict';
@@ -132,9 +141,10 @@
     uniform float uFeature;
     uniform float uSeed;
     uniform int uStyle;
+    uniform float uFlip;       // 1: row 0 is the bottom (stills); 0: row 0 is the top (backdrop)
     out vec4 outColor;
     void main() {
-      vec2 texel = vec2(gl_FragCoord.x, uSize.y - gl_FragCoord.y);
+      vec2 texel = vec2(gl_FragCoord.x, mix(gl_FragCoord.y, uSize.y - gl_FragCoord.y, uFlip));
       vec2 pt = uOrigin + texel * uPtPerTexel;
       vec2 p = pt / uFeature + vec2(uSeed * 17.17, uSeed * -9.31);
       outColor = vec4(terrainHeight(p, uSeed * 1.37, uStyle), 0.0, 0.0, 1.0);
@@ -201,6 +211,68 @@
         color = uDark != 0 ? color + vec3(0.55, 0.62, 0.78) * s * uShade : color * (1.0 + s * uShade);
       }
       outColor = vec4(clamp(mix(color, uInk, alpha), 0.0, 1.0), 1.0);
+    }`;
+
+  // The page backdrop: only the lines, premultiplied, over the paper gradient on <html>.
+  const MAX_STOPS = 48;
+  const BACKDROP = `#version 300 es
+    precision highp float;
+    uniform highp sampler2D uHeight;
+    uniform vec2 uHeightSize;
+    uniform vec2 uCanvasSize;
+    uniform float uPxPerPt;
+    uniform float uTexelsPerPt;
+    uniform float uTerrainTop;   // terrain row (pt) at the top of the canvas
+    uniform float uDocTop;       // page y (pt) at the top of the canvas
+    uniform float uLevels;
+    uniform float uMinorWidth;
+    uniform float uIndexWidth;
+    uniform float uMinorAlpha;
+    uniform float uIndexAlpha;
+    uniform float uShift;
+    uniform int uHasIndex;
+    uniform float uStopY[${MAX_STOPS}];
+    uniform vec4 uStopInk[${MAX_STOPS}];   // line color + strength
+    uniform int uStopCount;
+    out vec4 outColor;
+
+    float bilinear(vec2 texel) {
+      vec2 t = texel - 0.5;
+      vec2 f = fract(t);
+      ivec2 i0 = ivec2(floor(t));
+      ivec2 last = ivec2(uHeightSize) - 1;
+      float a = texelFetch(uHeight, clamp(i0, ivec2(0), last), 0).r;
+      float b = texelFetch(uHeight, clamp(i0 + ivec2(1, 0), ivec2(0), last), 0).r;
+      float c = texelFetch(uHeight, clamp(i0 + ivec2(0, 1), ivec2(0), last), 0).r;
+      float d = texelFetch(uHeight, clamp(i0 + ivec2(1, 1), ivec2(0), last), 0).r;
+      return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+    }
+
+    // Stops are sorted and strictly increasing, so each smoothstep only bites between its pair.
+    vec4 inkAt(float y) {
+      vec4 ink = uStopInk[0];
+      for (int i = 1; i < ${MAX_STOPS}; i++) {
+        if (i >= uStopCount) break;
+        ink = mix(ink, uStopInk[i], smoothstep(uStopY[i - 1], uStopY[i], y));
+      }
+      return ink;
+    }
+
+    void main() {
+      vec2 pt = vec2(gl_FragCoord.x, uCanvasSize.y - gl_FragCoord.y) / uPxPerPt;
+      float h = bilinear(vec2(pt.x, pt.y + uTerrainTop) * uTexelsPerPt);
+      float v = h * uLevels + uShift;
+      float fw = max(fwidth(v), 1e-5);
+      float dist = abs(fract(v + 0.5) - 0.5) / fw;
+      float n = floor(v + 0.5);
+      bool isIndex = uHasIndex != 0 && (n - 5.0 * floor(n / 5.0)) < 0.5;
+      float want = (isIndex ? uIndexWidth : uMinorWidth) * uPxPerPt;
+      float width = max(want, 0.85);
+      float cover = clamp(width * 0.5 + 0.5 - dist, 0.0, 1.0) * min(1.0, want / 0.85);
+      float crowd = 1.0 - smoothstep(0.28, 0.65, fw);
+      vec4 ink = inkAt(pt.y + uDocTop);
+      float alpha = clamp(cover * crowd * (isIndex ? uIndexAlpha : uMinorAlpha) * ink.a, 0.0, 1.0);
+      outColor = vec4(ink.rgb * alpha, alpha);
     }`;
 
   // ---------------------------------------------------------------------------------------
@@ -277,6 +349,7 @@
       gl.uniform1f(height.u.uFeature, feature);
       gl.uniform1f(height.u.uSeed, seed);
       gl.uniform1i(height.u.uStyle, LOOKS[style].index);
+      gl.uniform1f(height.u.uFlip, 1);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       terrain = { key, texture, w, h, ptPerTexel, feature };
@@ -420,7 +493,296 @@
     return { redraw: () => { last = 0; schedule(); } };
   }
 
+  // ---------------------------------------------------------------------------------------
+  // The page backdrop
+
+  /// The terrain moves this much for each point the page scrolls.
+  const PARALLAX = 0.6;
+  /// Terrain kept above the page and below it, for the rubber band.
+  const OVERSCROLL = 320;
+
+  function Backdrop(canvas, look) {
+    const gl = canvas.getContext('webgl2', { antialias: false, alpha: true, premultipliedAlpha: true, preserveDrawingBuffer: false });
+    if (!gl || !gl.getExtension('EXT_color_buffer_float')) return null;
+    const height = program(gl, HEIGHT);
+    const lines = program(gl, BACKDROP);
+    if (!height || !lines) return null;
+    const maxSize = Math.min(8192, gl.getParameter(gl.MAX_TEXTURE_SIZE), ...gl.getParameter(gl.MAX_VIEWPORT_DIMS));
+
+    const quad = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+    const framebuffer = gl.createFramebuffer();
+    const stopY = new Float32Array(MAX_STOPS);
+    const stopInk = new Float32Array(MAX_STOPS * 4);
+    let field = null; // { texture, w, h, density, cssW, ptHeight, feature }
+
+    /// The height field for a strip of terrain cssW wide and ptHeight tall, row 0 at the top.
+    /// Rebuilt only for a new width or a taller page, with headroom so the page settling
+    /// (fonts, images) doesn't rebuild it again.
+    function ensureField(cssW, ptHeight, feature) {
+      if (field && field.cssW === cssW && field.feature === feature && field.ptHeight >= ptHeight) return;
+      const tall = ptHeight * 1.12 + 2 * OVERSCROLL;
+      const density = Math.max(0.25, Math.min(1, maxSize / tall, maxSize / cssW, Math.sqrt(6e6 / (cssW * tall))));
+      const w = Math.ceil(cssW * density);
+      const h = Math.ceil(tall * density);
+      if (field) gl.deleteTexture(field.texture);
+      const texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.R32F, w, h, 0, gl.RED, gl.FLOAT, null);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+      gl.viewport(0, 0, w, h);
+      gl.useProgram(height.p);
+      gl.uniform2f(height.u.uOrigin, -cssW / 2, -OVERSCROLL);
+      gl.uniform2f(height.u.uSize, w, h);
+      gl.uniform1f(height.u.uPtPerTexel, 1 / density);
+      gl.uniform1f(height.u.uFeature, feature);
+      gl.uniform1f(height.u.uSeed, 1);
+      gl.uniform1i(height.u.uStyle, look.index);
+      gl.uniform1f(height.u.uFlip, 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      field = { texture, w, h, density, cssW, ptHeight: tall - 2 * OVERSCROLL, feature };
+    }
+
+    function draw({ cssW, pxW, pxH, docTop, terrainTop, shift, stops }) {
+      if (canvas.width !== pxW) canvas.width = pxW;
+      if (canvas.height !== pxH) canvas.height = pxH;
+      const count = Math.min(stops.length, MAX_STOPS);
+      for (let i = 0; i < count; i++) {
+        stopY[i] = stops[i].y;
+        stopInk.set(stops[i].ink, i * 4);
+        stopInk[i * 4 + 3] = stops[i].lines;
+      }
+      gl.viewport(0, 0, pxW, pxH);
+      gl.useProgram(lines.p);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, field.texture);
+      const u = lines.u;
+      gl.uniform1i(u.uHeight, 0);
+      gl.uniform2f(u.uHeightSize, field.w, field.h);
+      gl.uniform2f(u.uCanvasSize, pxW, pxH);
+      gl.uniform1f(u.uPxPerPt, pxW / cssW);
+      gl.uniform1f(u.uTexelsPerPt, field.density);
+      gl.uniform1f(u.uTerrainTop, Math.max(-OVERSCROLL, terrainTop) + OVERSCROLL);
+      gl.uniform1f(u.uDocTop, docTop);
+      gl.uniform1f(u.uLevels, look.levels);
+      gl.uniform1f(u.uMinorWidth, look.minor);
+      gl.uniform1f(u.uIndexWidth, look.major);
+      gl.uniform1f(u.uMinorAlpha, look.alpha[0]);
+      gl.uniform1f(u.uIndexAlpha, look.majorAlpha[0]);
+      gl.uniform1f(u.uShift, shift);
+      gl.uniform1i(u.uHasIndex, look.hasIndex);
+      gl.uniform1fv(u['uStopY[0]'], stopY);
+      gl.uniform4fv(u['uStopInk[0]'], stopInk);
+      gl.uniform1i(u.uStopCount, count);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+
+    return { ensureField, draw };
+  }
+
+  const colorProbe = document.createElement('canvas').getContext('2d');
+  /// Any CSS color as [r, g, b], 0…1.
+  function parseColor(text) {
+    colorProbe.fillStyle = '#000';
+    colorProbe.fillStyle = text.trim() || '#000';
+    const c = colorProbe.fillStyle;
+    if (c[0] === '#') return rgb(c);
+    return (c.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map((x) => x / 255);
+  }
+
+  const toLinear = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  const toGamma = (c) => (c <= 0.0031308 ? c * 12.92 : 1.055 * c ** (1 / 2.4) - 0.055);
+  const luminance = (c) => { const [r, g, b] = c.map(toLinear); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+
+  // Blends run through OKLab, so they keep their lightness even and don't go muddy.
+  function oklab(c) {
+    const [r, g, b] = c.map(toLinear);
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+    const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+    return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+      1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+      0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s];
+  }
+  function fromOklab([L, a, b]) {
+    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+    const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+    const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+    return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+      -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+      -0.0041960771 * l - 0.7034186147 * m + 1.707614701 * s].map((c) => toGamma(Math.min(1, Math.max(0, c))));
+  }
+  const cssColor = (c) => `rgb(${c.map((x) => Math.round(x * 255)).join(' ')})`;
+  const same = (a, b) => a.every((x, i) => Math.abs(x - b[i]) < 1e-3);
+
+  function readBands() {
+    const scrollY = window.scrollY;
+    return [...document.querySelectorAll('[data-band]')].map((el) => {
+      const rect = el.getBoundingClientRect();
+      const css = getComputedStyle(el);
+      const prop = (name) => css.getPropertyValue(name).trim();
+      const color = (name) => { const value = prop(name); return value && value !== 'none' ? parseColor(value) : null; };
+      return {
+        y0: rect.top + scrollY,
+        y1: rect.bottom + scrollY,
+        paper: parseColor(prop('--band-paper')),
+        swell: color('--band-swell'),
+        dusk: color('--band-dusk'),
+        ink: parseColor(prop('--band-ink')),
+        lines: parseFloat(prop('--band-lines')) || 1,
+      };
+    }).filter((b) => b.y1 > b.y0).sort((a, b) => a.y0 - b.y0);
+  }
+
+  /// Color stops down the page. Neighbouring bands blend across the edge they share: a big
+  /// change (day into night) over `blend` either side of it, inside the sections' padding, so
+  /// no text sits on it; close colors over up to four times that, so the change is felt
+  /// rather than seen. A band with a swell color peaks at it in its middle, fading in and out
+  /// across the whole band; one with a dusk color is entered through it (day into night).
+  function bandStops(bands, blend, darkLines) {
+    const reaches = bands.slice(1).map((b, i) => {
+      const a = bands[i];
+      const la = oklab(a.swell || a.paper);
+      const lb = oklab(b.swell || b.paper);
+      const distance = Math.hypot(la[0] - lb[0], la[1] - lb[1], la[2] - lb[2]);
+      const stretch = 1 + 3 * (1 - Math.min(1, distance / 0.3));
+      return Math.min(blend * stretch, 0.4 * (a.y1 - a.y0), 0.4 * (b.y1 - b.y0));
+    });
+    const stops = [];
+    const push = (y, paper, band, via = false) => {
+      const last = stops[stops.length - 1];
+      stops.push({
+        y: last ? Math.max(y, last.y + 1) : y,
+        paper,
+        via,
+        ink: band.ink,
+        lines: band.lines * (luminance(paper) < 0.25 ? darkLines : 1),
+      });
+    };
+    bands.forEach((b, i) => {
+      const first = i === 0;
+      const last = i === bands.length - 1;
+      if (b.dusk && !first) push(b.y0, b.dusk, b, true);
+      if (b.swell && !first && !last) {
+        push((b.y0 + b.y1) / 2, b.swell, b);
+        return;
+      }
+      push(first ? b.y0 : b.y0 + reaches[i - 1], b.paper, b);
+      if (b.swell) push((b.y0 + b.y1) / 2, b.swell, b);
+      push(last ? b.y1 : b.y1 - reaches[i], b.paper, b);
+    });
+    return stops;
+  }
+
+  /// The paper, as one gradient on <html>: it scrolls with the page, so color edges never lag.
+  /// It reaches a screen past each end for the rubber band. A dusk stop bends the blend
+  /// between its neighbours toward it (a quadratic curve in OKLab) rather than pinning a
+  /// stripe of its color.
+  function paintPaper(stops, docH) {
+    const root = document.documentElement;
+    const pad = Math.round(window.innerHeight);
+    const parts = [];
+    let a = null;
+    let via = null;
+    for (const s of stops) {
+      if (s.via) { via = s; continue; }
+      if (a && (via || !same(a.paper, s.paper))) {
+        const la = oklab(a.paper);
+        const lb = oklab(s.paper);
+        const lc = via && oklab(via.paper);
+        const steps = via ? 16 : 8;
+        for (let k = 1; k < steps; k++) {
+          const t = k / steps;
+          const e = t * t * (3 - 2 * t);
+          const mixed = la.map((v, j) => (lc ? (1 - e) ** 2 * v + 2 * e * (1 - e) * lc[j] + e * e * lb[j] : v + (lb[j] - v) * e));
+          parts.push(`${cssColor(fromOklab(mixed))} ${(a.y + (s.y - a.y) * t + pad).toFixed(1)}px`);
+        }
+      }
+      parts.push(`${cssColor(s.paper)} ${(s.y + pad).toFixed(1)}px`);
+      a = s;
+      via = null;
+    }
+    root.style.backgroundImage = `linear-gradient(${parts.join(', ')})`;
+    root.style.backgroundSize = `100% ${docH + 2 * pad}px`;
+    root.style.backgroundPosition = `0 ${-pad}px`;
+    root.style.backgroundRepeat = 'no-repeat';
+    root.style.backgroundColor = cssColor(stops[stops.length - 1].paper);
+    root.classList.add('has-backdrop');
+  }
+
+  function setUpBackdrop(canvas) {
+    const look = LOOKS[canvas.dataset.backdrop] || LOOKS.survey;
+    const r = Backdrop(canvas, look);
+    let stops = [];
+    let docH = 0;
+    let shift = 0;
+    let frame = 0;
+
+    // Colors and positions: on load, when the page changes size, and with the theme.
+    function layout() {
+      const bands = readBands();
+      if (!bands.length) return;
+      docH = document.documentElement.scrollHeight;
+      stops = bandStops(bands, Math.min(145, Math.max(76, window.innerWidth * 0.1)), look.alpha[1] / look.alpha[0]);
+      paintPaper(stops, docH);
+      request();
+    }
+
+    function render() {
+      frame = 0;
+      if (!r || !stops.length) return;
+      const m = measure(canvas);
+      const k = reduceMotion.matches ? 1 : PARALLAX;
+      const scrollY = window.scrollY;
+      r.ensureField(m.cssW, Math.max(0, docH - m.cssH) * k + m.cssH, featureFor(canvas, m.cssW));
+      r.draw({ ...m, docTop: scrollY, terrainTop: scrollY * k, shift, stops });
+      canvas.classList.add('is-drawn');
+    }
+    function request() { if (!frame) frame = requestAnimationFrame(render); }
+
+    // The tide: 0.05 contour levels a second, as the app's Tide at 1×. It's slow, so 20
+    // frames a second is plenty; scrolling draws every frame.
+    let tideTimer = 0;
+    let tideLast = 0;
+    function tide() {
+      tideTimer = 0;
+      if (!r || reduceMotion.matches || document.hidden) { tideLast = 0; return; }
+      const now = performance.now();
+      if (tideLast) shift = (shift + Math.min(0.1, (now - tideLast) / 1000) * 0.05) % 5;
+      tideLast = now;
+      request();
+      tideTimer = setTimeout(tide, 1000 / 20);
+    }
+
+    layout();
+    tide();
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request);
+    let relayout = 0;
+    new ResizeObserver(() => {
+      cancelAnimationFrame(relayout);
+      relayout = requestAnimationFrame(layout);
+    }).observe(document.body);
+    darkQuery.addEventListener('change', layout);
+    window.addEventListener('wtf:theme', layout);
+    document.addEventListener('visibilitychange', () => { if (!tideTimer) tide(); });
+    reduceMotion.addEventListener('change', () => { if (!tideTimer) tide(); request(); });
+  }
+
   function start() {
+    const backdrop = document.querySelector('canvas.backdrop');
+    if (backdrop) setUpBackdrop(backdrop);
+
     const live = [];
     const stills = [...document.querySelectorAll('canvas.topo')].filter((el) => {
       if (!parse(el).live) return true;
