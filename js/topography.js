@@ -627,6 +627,8 @@
 
   function readBands() {
     const scrollY = window.scrollY;
+    // --backdrop-lines on <html> scales every band's lines at once.
+    const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--backdrop-lines')) || 1;
     return [...document.querySelectorAll('[data-band]')].map((el) => {
       const rect = el.getBoundingClientRect();
       const css = getComputedStyle(el);
@@ -639,7 +641,7 @@
         swell: color('--band-swell'),
         dusk: color('--band-dusk'),
         ink: parseColor(prop('--band-ink')),
-        lines: parseFloat(prop('--band-lines')) || 1,
+        lines: (parseFloat(prop('--band-lines')) || 1) * scale,
       };
     }).filter((b) => b.y1 > b.y0).sort((a, b) => a.y0 - b.y0);
   }
@@ -829,4 +831,22 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
+
+  // A still for pictures that can't hold a canvas.topo of their own: the iPhone Duo's screens
+  // (js/duo.js) are drawn in 3D, where a canvas can't be measured. Sizes are in points; returns
+  // a 2D canvas, or null without WebGL2.
+  window.wtfTopography = {
+    still({ style = 'survey', theme = 'auto', width, height, scale = 2, feature = 340 }) {
+      const r = sharedRenderer();
+      if (!r) return null;
+      const pxW = Math.round(width * scale);
+      const pxH = Math.round(height * scale);
+      r.draw({ style, theme: resolvedTheme(theme), cssW: width, cssH: height, pxW, pxH, feature });
+      const out = document.createElement('canvas');
+      out.width = pxW;
+      out.height = pxH;
+      out.getContext('2d').drawImage(r.canvas, 0, 0);
+      return out;
+    },
+  };
 })();

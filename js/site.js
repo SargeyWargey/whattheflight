@@ -3,8 +3,10 @@
 (function () {
   'use strict';
 
-  // Night by default (set in each page's <head>); day once someone switches.
+  // Every page opens at night (data-theme="dark" on <html>); day only for the rest of a visit
+  // once someone switches.
   const root = document.documentElement;
+  try { localStorage.removeItem('wtf.theme'); } catch (e) { /* the old per-browser choice */ }
   const isNight = () => root.dataset.theme !== 'light';
   const themeColor = document.querySelector('meta[name="theme-color"]');
 
@@ -19,8 +21,8 @@
     toggle.addEventListener('click', () => {
       root.dataset.theme = isNight() ? 'light' : 'dark';
       try {
-        if (root.dataset.theme === 'light') localStorage.setItem('wtf.theme', 'light');
-        else localStorage.removeItem('wtf.theme');
+        if (root.dataset.theme === 'light') sessionStorage.setItem('wtf.theme', 'light');
+        else sessionStorage.removeItem('wtf.theme');
       } catch (e) { /* private mode: the choice lasts until reload */ }
       label();
       window.dispatchEvent(new Event('wtf:theme'));
@@ -30,6 +32,15 @@
 
   // Picture switchers (the logbook pages, the Apple TV views): tabs under one screen. A tab
   // with data-src-dark shows that picture in the night look.
+  //
+  // They move on by themselves: the chosen pill fills over DWELL and, when full, the next tab
+  // takes over. It holds while the switcher is off screen, the browser tab is hidden, or the
+  // pointer or keyboard focus is on the screen or the tabs, and stops for good once someone picks
+  // a tab. Not at all with Reduce Motion. Every tab's picture is fetched as the switcher comes
+  // near, so a change never waits on the network.
+  const DWELL = 6000;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
   document.querySelectorAll('[data-switcher]').forEach((group) => {
     const caption = group.querySelector('[data-switcher-caption]');
     const tabs = [...group.querySelectorAll('[role=tab]')];
@@ -56,27 +67,74 @@
       next.src = src;
     }
 
+    let near = false;
+    const preload = () => tabs.forEach((t) => { new Image().src = srcOf(t); });
+    new IntersectionObserver((entries) => {
+      if (near || !entries[0].isIntersecting) return;
+      near = true;
+      preload();
+    }, { rootMargin: '600px 0px' }).observe(screen);
+
     function followTheme() {
-      tabs.forEach((t) => {
-        const thumb = t.querySelector('img');
-        if (thumb && t.dataset.srcDark && thumb.getAttribute('src') !== srcOf(t)) thumb.src = srcOf(t);
-      });
+      if (near) preload();
       show(selected());
     }
     window.addEventListener('wtf:theme', followTheme);
 
+    let playing = !reduceMotion.matches;
+    const holds = new Set(['offscreen']);
+    function update() {
+      group.classList.toggle('is-playing', playing);
+      group.classList.toggle('is-paused', holds.size > 0 || document.hidden);
+    }
+    function hold(reason, on) {
+      if (on) holds.add(reason); else holds.delete(reason);
+      update();
+    }
+    function stop() {
+      if (!playing) return;
+      playing = false;
+      // Changes are only announced once they're the visitor's own.
+      if (caption) caption.setAttribute('aria-live', 'polite');
+      update();
+    }
+    if (playing && caption) caption.setAttribute('aria-live', 'off');
+    group.style.setProperty('--dwell', `${DWELL}ms`);
+
     tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => show(tab));
+      const bar = document.createElement('i');
+      bar.className = 'tab-progress';
+      bar.setAttribute('aria-hidden', 'true');
+      bar.append(document.createElement('b'));
+      tab.append(bar);
+      bar.addEventListener('animationend', () => {
+        if (playing && tab === selected()) show(tabs[(i + 1) % tabs.length]);
+      });
+
+      tab.addEventListener('click', () => { stop(); show(tab); });
       tab.addEventListener('keydown', (e) => {
         const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
         if (!step) return;
         e.preventDefault();
+        stop();
         const next = tabs[(i + step + tabs.length) % tabs.length];
         next.focus();
         show(next);
       });
     });
 
+    const tablist = tabs[0].parentElement;
+    [screen.closest('figure') || screen, tablist].forEach((el) => {
+      el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') hold(`hover-${el.tagName}`, true); });
+      el.addEventListener('pointerleave', () => hold(`hover-${el.tagName}`, false));
+    });
+    tablist.addEventListener('focusin', () => hold('focus', true));
+    tablist.addEventListener('focusout', (e) => { if (!tablist.contains(e.relatedTarget)) hold('focus', false); });
+    new IntersectionObserver((entries) => hold('offscreen', !entries[0].isIntersecting), { threshold: 0.5 }).observe(screen);
+    document.addEventListener('visibilitychange', update);
+    reduceMotion.addEventListener('change', () => { if (reduceMotion.matches) stop(); });
+
+    update();
     followTheme();
   });
 })();

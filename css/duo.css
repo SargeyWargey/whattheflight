@@ -1,0 +1,255 @@
+/* iPhone Duo: the folding iPhone in 3D (js/duo.js), each way you can hold it. A list of ways
+   on the left, the one picked opened into a card (the first with the slider), and the Duo on
+   the right with the app running on its screens. */
+
+.device-label[data-device="duo"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2.5' y='4.5' width='19' height='15' rx='2.4'/%3E%3Cpath d='M12 4.5v15'/%3E%3C/svg%3E"); }
+
+/* A hard drag can swing the Duo's near edge past the window: clip it there, sideways only. */
+#duo { overflow-x: clip; }
+
+.duo {
+  --duo-fill: color-mix(in srgb, var(--value) 8%, transparent);
+  --duo-fill-hover: color-mix(in srgb, var(--value) 13%, transparent);
+  display: grid;
+  grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+  grid-template-areas: "side stage" ". caption";
+  align-items: center;
+  gap: 8px clamp(24px, 4vw, 64px);
+  margin-top: clamp(40px, 5vw, 64px);
+}
+
+/* ------------------------------------------------------------------------------------------
+   The list: a pill for each way, the one picked opened into a card. */
+
+.duo-side { grid-area: side; display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; gap: clamp(14px, 2vw, 22px); }
+.duo-steps { display: grid; gap: 12px; }
+.duo-step {
+  display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
+  border: 0; border-radius: 50%; background: var(--duo-fill); color: var(--value); cursor: pointer;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+.duo-step:hover:not(:disabled) { background: var(--duo-fill-hover); }
+.duo-step svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.duo-step:disabled { opacity: 0.3; cursor: default; }
+
+.duo-list { display: grid; justify-items: start; gap: 12px; margin: 0; padding: 0; list-style: none; container-type: inline-size; }
+.duo-item { max-width: 100%; border-radius: 28px; background: var(--duo-fill); overflow: hidden; transition: background-color 0.2s ease; }
+.duo-item:not(.is-open):hover { background: var(--duo-fill-hover); }
+.duo-pill {
+  display: flex; align-items: center; gap: 14px; min-height: 56px; padding: 0 26px 0 14px;
+  border: 0; border-radius: inherit; background: none; color: var(--value); cursor: pointer;
+  font: 600 17px/1.2 var(--sans); white-space: nowrap;
+}
+.duo-pill:focus-visible { outline-offset: -3px; border-radius: 28px; }
+.duo-item.is-open .duo-pill { display: none; }
+.duo-icon { flex: none; width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.duo-icon--slide circle { fill: var(--signal); stroke: none; }
+.duo-icon--slide path { stroke: #fff; stroke-width: 2; }
+
+.duo-card { display: grid; gap: 14px; width: min(100cqw, 400px); padding: 24px 28px 26px; }
+.duo-card[hidden] { display: none; }
+.duo-card:focus { outline: none; }
+.duo-card p { margin: 0; color: var(--text-2); font-size: 17px; line-height: 1.5; text-wrap: pretty; }
+.duo-card strong { color: var(--value); font-weight: 600; }
+.duo-hint { margin-top: 4px; color: var(--text-2); font-size: 14px; }
+
+/* The slider, as Apple's: a wide red knob with ‹ › on a soft track. */
+.duo-slider {
+  --knob: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7l-5 5 5 5M15 7l5 5-5 5'/%3E%3C/svg%3E");
+  --fill: 0%;
+  -webkit-appearance: none; appearance: none;
+  display: block; width: 100%; height: 44px; margin: 0;
+  background: none; cursor: grab; touch-action: pan-y;
+}
+.duo-slider:active { cursor: grabbing; }
+.duo-slider::-webkit-slider-runnable-track {
+  height: 24px; border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--signal) 30%, transparent) var(--fill), color-mix(in srgb, var(--value) 14%, transparent) var(--fill));
+}
+.duo-slider::-moz-range-track { height: 24px; border-radius: 999px; background: color-mix(in srgb, var(--value) 14%, transparent); }
+.duo-slider::-moz-range-progress { height: 24px; border-radius: 999px; background: color-mix(in srgb, var(--signal) 30%, transparent); }
+.duo-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 64px; height: 42px; margin-top: -9px; border: 0; border-radius: 999px;
+  background: var(--signal) var(--knob) center / 22px no-repeat;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease;
+}
+.duo-slider:active::-webkit-slider-thumb { transform: scale(1.06); }
+.duo-slider::-moz-range-thumb {
+  width: 64px; height: 42px; border: 0; border-radius: 999px;
+  background: var(--signal) var(--knob) center / 22px no-repeat;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+}
+.duo-slider:focus-visible { outline: none; }
+.duo-slider:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--value); outline-offset: 3px; }
+.duo-slider:focus-visible::-moz-range-thumb { outline: 2px solid var(--value); outline-offset: 3px; }
+
+.duo > figcaption {
+  grid-area: caption; justify-self: center; max-width: 34rem;
+  font-size: 15px; line-height: 1.5; text-align: center; color: var(--text-2);
+}
+
+/* ------------------------------------------------------------------------------------------
+   The Duo: two halves on a hinge, in 3D. Sizes are in the stage's width: the inner screen
+   (951 × 669 pt) with its bezel, the cover screen (466 × 678 pt) on the left half's back. */
+
+.duo-stage {
+  grid-area: stage;
+  position: relative; container-type: inline-size; aspect-ratio: 1.08;
+  cursor: grab; touch-action: pan-y;
+  -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.duo-stage.is-dragging { cursor: grabbing; }
+.duo-view {
+  position: absolute; inset: 0; perspective: 240cqw;
+  --dw: 84cqw;                               /* open, side to side */
+  --b: calc(var(--dw) * 0.012);              /* the bezel */
+  --sw: calc(var(--dw) - var(--b) * 2);      /* the inner screen */
+  --sh: calc(var(--sw) * 669 / 951);
+  --dh: calc(var(--sh) + var(--b) * 2);
+  --hw: calc(var(--dw) / 2);                 /* a half */
+  --t: calc(var(--dw) * 0.026);              /* a half's thickness (duo.js uses the same) */
+  --r: calc(var(--dw) * 0.068);              /* the outer corners */
+  --rh: calc(var(--dw) * 0.008);             /* the corners at the hinge */
+  --rs: calc(var(--sw) * 0.056);             /* the inner screen's corners */
+  --ob: calc(var(--dw) * 0.014);             /* the cover screen's bezel */
+}
+/* A soft shadow on the ground below, so it floats rather than hangs. */
+.duo-view::before {
+  content: ""; position: absolute; left: 18%; right: 18%; bottom: 3%; height: 9%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.32), transparent);
+  filter: blur(6px);
+}
+.duo-rig { position: absolute; left: 50%; top: 50%; transform-style: preserve-3d; will-change: transform; }
+.duo-half { position: absolute; top: calc(var(--dh) / -2); width: var(--hw); height: var(--dh); transform-style: preserve-3d; }
+/* The left half turns on the hinge (a pixel in front of the right one, so shut it lies on top). */
+.duo-half--a { left: calc(var(--hw) * -1); transform-origin: 100% 50% 1px; will-change: transform; }
+.duo-half--b { left: 0; }
+
+/* The frame: the half's outline stacked through its thickness, polished titanium, a bright
+   line in the middle where it catches the light, darker as it turns away (--edge). */
+.duo-layer {
+  position: absolute; inset: 0;
+  background: color-mix(in srgb, var(--m), #05060a calc(var(--edge, 0.2) * 100%));
+  transform: translateZ(calc(var(--t) * var(--k) / -10));
+}
+.duo-layer:nth-child(1), .duo-layer:nth-child(9) { --m: #6c707a; }
+.duo-layer:nth-child(2), .duo-layer:nth-child(8) { --m: #9a9ea8; }
+.duo-layer:nth-child(3), .duo-layer:nth-child(7) { --m: #c4c7ce; }
+.duo-layer:nth-child(4), .duo-layer:nth-child(6) { --m: #dfe1e6; }
+.duo-layer:nth-child(5) { --m: #f2f3f6; }
+
+.duo-face { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.duo-half--a :is(.duo-layer, .duo-face--in), .duo-half--b .duo-face--back { border-radius: var(--r) var(--rh) var(--rh) var(--r); }
+.duo-half--b :is(.duo-layer, .duo-face--in), .duo-half--a .duo-face--out { border-radius: var(--rh) var(--r) var(--r) var(--rh); }
+.duo-face--in, .duo-face--out { background: #050608; box-shadow: inset 0 0 0 calc(var(--dw) * 0.003) #8e929b; }
+.duo-face--out, .duo-face--back { transform: translateZ(calc(var(--t) * -1)) rotateY(180deg); }
+.duo-face--back {
+  background:
+    radial-gradient(120% 90% at 20% 0%, rgba(255, 255, 255, 0.16), transparent 55%),
+    linear-gradient(150deg, #c9ccd3, #9a9ea7 55%, #b7bac2);
+  box-shadow: inset 0 0 0 calc(var(--dw) * 0.003) #e6e8ec;
+}
+/* Light from the top left: a face turned away from it darkens (duo.js sets --shade). */
+.duo-face::after {
+  content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit;
+  background: #000; opacity: var(--shade, 0); pointer-events: none;
+}
+
+.duo-screen { position: absolute; top: var(--b); bottom: var(--b); overflow: hidden; background: #000; }
+.duo-half--a .duo-screen { left: var(--b); right: 0; border-radius: var(--rs) 0 0 var(--rs); }
+.duo-half--b .duo-screen { left: 0; right: var(--b); border-radius: 0 var(--rs) var(--rs) 0; }
+.duo-screen canvas, .duo-cover canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+/* The crease in the glass (deeper as it folds, --crease), and a sheen that slides across as the Duo turns (--sheen). */
+.duo-screen::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, 0.07) 47%, rgba(255, 255, 255, 0.02) 53%, transparent 60%);
+  background-size: 300% 100%;
+  background-position: calc(50% + var(--sheen, 0%)) 0;
+}
+.duo-screen::after {
+  content: ""; position: absolute; top: 0; bottom: 0; z-index: 2; width: calc(var(--dw) * 0.012); pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, var(--crease, 0.2)));
+}
+.duo-half--a .duo-screen::after { right: 0; }
+.duo-half--b .duo-screen::after { left: 0; transform: scaleX(-1); }
+
+/* The cover screen: 466 × 678 pt, the hinge on its left, the camera a hole at the top of the
+   strip down its right side. */
+.duo-cover {
+  position: absolute; top: var(--ob); left: 50%; transform: translateX(-50%);
+  height: calc(var(--dh) - var(--ob) * 2); aspect-ratio: 466 / 678; overflow: hidden;
+  border-radius: 2% 12.5% 12.5% 2% / 1.4% 8.6% 8.6% 1.4%;
+  background: #000;
+}
+.duo-cover::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, 0.07) 47%, rgba(255, 255, 255, 0.02) 53%, transparent 60%);
+  background-size: 300% 100%;
+  background-position: calc(50% - var(--sheen, 0%)) 0;
+}
+.duo-camera {
+  position: absolute; left: 88.2%; top: 6.9%; z-index: 2;
+  width: 7.9%; aspect-ratio: 1; transform: translate(-50%, -50%);
+  border-radius: 50%; background: #000;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* The cameras on the right half's back, top left as you look at it. */
+.duo-lenses {
+  position: absolute; left: 7%; top: 4.5%;
+  width: 38%; aspect-ratio: 1; border-radius: 26%;
+  background: linear-gradient(150deg, #d6d8de, #a5a9b2);
+  box-shadow: 0 0 0 calc(var(--dw) * 0.002) rgba(0, 0, 0, 0.18), 0 calc(var(--dw) * 0.004) calc(var(--dw) * 0.01) rgba(0, 0, 0, 0.25);
+}
+.duo-lenses i {
+  position: absolute; width: 40%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #3a4258 0 14%, #0b0d14 34%, #1c1f29 58%, #4b4f5a 62%, #20232b 70%);
+  box-shadow: 0 0 0 calc(var(--dw) * 0.0025) #7e828c;
+}
+.duo-lenses i:nth-child(1) { left: 8%; top: 8%; }
+.duo-lenses i:nth-child(2) { left: 8%; bottom: 8%; }
+.duo-lenses i:nth-child(3) { right: 12%; top: 50%; width: 15%; transform: translateY(-50%); background: #f4efe2; box-shadow: none; }
+
+/* The spine: strips round the hinge, between the backs (duo.js turns and sizes them). */
+.duo-spine { position: absolute; left: 0; top: 0; transform-style: preserve-3d; }
+.duo-spine i {
+  position: absolute; left: 0; top: calc(var(--dh) / -2 + var(--rh)); height: calc(var(--dh) - var(--rh) * 2);
+  background: color-mix(in srgb, #a3a7b0, #05060a calc((var(--shade, 0.2) * 1.4 + 0.08) * 100%));
+  backface-visibility: visible;
+  transform-origin: 50% 50%;
+  translate: -50% 0;
+}
+.duo-spine i[hidden] { display: none; }
+
+/* ------------------------------------------------------------------------------------------
+   Smaller screens: the Duo on top with the ways to hold it as a row of chips right under it,
+   so it stays in sight as you pick one, and the chosen one's card below the chips. */
+
+@media (max-width: 920px) {
+  .duo {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "stage" "side" "caption";
+    gap: 14px;
+  }
+  .duo-stage { width: min(100%, 560px); justify-self: center; }
+  .duo-side { grid-template-columns: minmax(0, 1fr); width: min(100%, 560px); justify-self: center; }
+  .duo-steps { display: none; }
+  .duo-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .duo-item { display: contents; }
+  .duo-pill, .duo-item.is-open .duo-pill {
+    display: flex; gap: 9px; min-height: 42px; padding: 0 16px 0 9px;
+    border-radius: 999px; background: var(--duo-fill); font-size: 15px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .duo-item .duo-pill[aria-expanded="true"] { background: color-mix(in srgb, var(--signal) 24%, transparent); }
+  .duo-icon { width: 24px; height: 24px; }
+  .duo-card {
+    order: 1; flex-basis: 100%; width: auto; margin-top: 6px;
+    padding: 20px 22px 22px; border-radius: 26px; background: var(--duo-fill);
+  }
+  .duo-card p { font-size: 16px; }
+  .duo > figcaption { margin-top: 4px; }
+}

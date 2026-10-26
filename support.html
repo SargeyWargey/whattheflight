@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -7,20 +7,20 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Support · What The Flight?</title>
 <meta name="description" content="Help with What The Flight? on iPhone, iPad, Apple Watch and Apple TV.">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0A0E14">
 <link rel="icon" href="img/favicon.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
-<link rel="stylesheet" href="css/site.css?v=202610242235">
+<link rel="stylesheet" href="css/site.css?v=202610252112">
 <script>
-  document.documentElement.dataset.theme = 'dark';
-  try { if (localStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
+  // Always opens at night; a switch to day lasts for this visit (this tab) only.
+  try { if (sessionStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
 </script>
-<script src="js/topography.js?v=202610242235" defer></script>
-<script src="js/site.js?v=202610242235" defer></script>
+<script src="js/topography.js?v=202610252112" defer></script>
+<script src="js/site.js?v=202610252112" defer></script>
 </head>
 <body>
 

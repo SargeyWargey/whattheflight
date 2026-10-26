@@ -32,19 +32,9 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #0A0E14; --paper-shade: #020306; --ink: #A8A4FF; --route: #8C9BFF; --signal: #FF6B5E;
-    --caption: #8790A0; --value: #E7EAF0; --text-2: #AEB5C2; --faint: #465061; --blip: #72AAFF;
-    --chip: #273042; --chip-text: #E7EAF0; --live: #3DDC84; --warning: #FFB020; --notable: #FFCB45;
-    --military: #A9C76B; --rule: #222A38; --paper-alt: #111722; --sky-top: #0C1730; --sky-mid: #18284A; --frame-shadow: 0, 0, 0;
-    --contour: #A8B8DB; --contour-strength: 0.85;
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"],
-.night {
+/* Night is the default: every page's <html> carries data-theme="dark", whatever the system
+   setting, and the day toggle only swaps it for "light". */
+:root[data-theme="dark"] {
   --paper: #0A0E14; --paper-shade: #020306; --ink: #A8A4FF; --route: #8C9BFF; --signal: #FF6B5E;
   --caption: #8790A0; --value: #E7EAF0; --text-2: #AEB5C2; --faint: #465061; --blip: #72AAFF;
   --chip: #273042; --chip-text: #E7EAF0; --live: #3DDC84; --warning: #FFB020; --notable: #FFCB45;
@@ -101,6 +91,10 @@ canvas.backdrop {
 }
 canvas.backdrop.is-drawn { opacity: 1; }
 
+/* How strong the backdrop's contour lines are, for the whole page: each band's --band-lines
+   is multiplied by it, so 1 is as drawn in the app. Kept low so the lines stay behind the text. */
+:root { --backdrop-lines: 0.55; }
+
 [data-band] {
   --band-paper: var(--paper);
   --band-swell: none;
@@ -109,19 +103,36 @@ canvas.backdrop.is-drawn { opacity: 1; }
   --band-lines: var(--contour-strength);
 }
 [data-band="hero"] { --band-lines: 0.55; }
-[data-band="alt"] { --band-swell: var(--paper-alt); }
 [data-band="sky"] { --band-swell: var(--sky-top); --band-lines: 0.5; }
-[data-band="night"] { --band-lines: 1; }
-/* By day, the page passes through twilight into the Apple Watch and Apple TV night. */
-:root[data-theme="light"] [data-band="night"] { --band-dusk: #7C77C6; }
+
+/* Between the night hero, Sky View's blue and the teal close, each section has a hue of its
+   own, from the app's chart tones (ChartTone in Theme.swift): violet ink, green, amber,
+   pink, then indigo and a petrol blue that carry the night down into the teal. Same lightness
+   throughout (OKLCH 0.22), so only the hue changes as you scroll; the lines are a pale tint of it. */
+[data-band="violet"]  { --band-paper: #1D1431; --band-ink: #D1C4FE; --band-lines: 1.1; }
+[data-band="green"]   { --band-paper: #052111; --band-ink: #A3DEB8; --band-lines: 1.1; }
+[data-band="amber"]   { --band-paper: #281600; --band-ink: #F1C590; --band-lines: 1.1; }
+[data-band="magenta"] { --band-paper: #281027; --band-ink: #ECBBE7; --band-lines: 1.1; }
+[data-band="indigo"]  { --band-paper: #141734; --band-ink: #C0CAFE; --band-lines: 1.1; }
+[data-band="petrol"]  { --band-paper: #011E2B; --band-ink: #92D9FB; --band-lines: 1.1; }
+/* By day the same hues as tinted paper, down to the teal close, which stays dark in both. */
+:root[data-theme="light"] [data-band="violet"]  { --band-paper: #E9E5F7; --band-ink: #50456F; --band-lines: 0.7; }
+:root[data-theme="light"] [data-band="green"]   { --band-paper: #DDEDE2; --band-ink: #2D583E; --band-lines: 0.7; }
+:root[data-theme="light"] [data-band="amber"]   { --band-paper: #F2E6D7; --band-ink: #65461D; --band-lines: 0.7; }
+:root[data-theme="light"] [data-band="magenta"] { --band-paper: #F1E3EF; --band-ink: #61405E; --band-lines: 0.7; }
+:root[data-theme="light"] [data-band="indigo"]  { --band-paper: #E3E7F8; --band-ink: #434973; --band-lines: 0.7; }
+:root[data-theme="light"] [data-band="petrol"]  { --band-paper: #D8EBF5; --band-ink: #1B546C; --band-lines: 0.7; }
 :root[data-theme="light"] .doc + [data-band="footer"] { --band-dusk: #6FA7A4; }
 [data-band="teal"] { --band-paper: #153F45; --band-swell: #1E545A; --band-ink: #DBF5F5; --band-lines: 1.25; }
 [data-band="footer"] { --band-paper: #0D2C31; --band-ink: #DBF5F5; --band-lines: 0.9; }
 [data-band="doc"] { --band-lines: 0.35; }
 
+:is([data-band="violet"], [data-band="green"], [data-band="amber"],
+    [data-band="magenta"], [data-band="indigo"], [data-band="petrol"]) { background: var(--band-paper); }
+
 /* With the backdrop drawn, the bands' own backgrounds (the fallback without JavaScript) go. */
 :root.has-backdrop body,
-:root.has-backdrop :is(.hero, .section, .night, .closing, .site-footer, .page-top) {
+:root.has-backdrop :is(.hero, .section, .closing, .site-footer, .page-top) {
   background: transparent;
   border-color: transparent;
   box-shadow: none;
@@ -327,12 +338,6 @@ canvas.backdrop.is-drawn { opacity: 1; }
    Sections */
 
 .section { position: relative; padding: clamp(84px, 11vw, 150px) 0; }
-/* Every other section sits on a slightly different paper, edged with a hairline, so each
-   one reads as its own band. */
-.section.alt {
-  background: var(--paper-alt);
-  box-shadow: inset 0 1px var(--rule), inset 0 -1px var(--rule);
-}
 .wrap { width: min(1160px, 100% - 2 * var(--gutter)); margin-inline: auto; }
 
 .copy { max-width: 32rem; }
@@ -348,11 +353,29 @@ h2 {
   text-wrap: balance;
 }
 
+/* Which device a section is about: a pill with the device's outline, in the radar's red. */
 .device-label {
-  margin: 0 0 14px !important;
-  font: 700 14px var(--mono) !important;
+  display: inline-flex; align-items: center; gap: 0.55em;
+  margin: 0 0 22px !important;
+  padding: 0.42em 1em 0.42em 0.8em;
+  border: 1.5px solid color-mix(in srgb, var(--signal) 60%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--signal) 12%, transparent);
+  font: 700 clamp(16px, 1.4vw, 19px)/1.2 var(--mono) !important;
+  letter-spacing: 0.01em;
   color: var(--signal) !important;
 }
+.device-label::before {
+  content: ""; flex: none;
+  width: 1.3em; height: 1.3em;
+  background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+          mask: var(--icon) center / contain no-repeat;
+}
+.device-label[data-device="iphone"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6.5' y='2.5' width='11' height='19' rx='2.8'/%3E%3Cpath d='M10.6 5.3h2.8'/%3E%3C/svg%3E"); }
+.device-label[data-device="ipad"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.5' y='3' width='17' height='18' rx='2.2'/%3E%3Cpath d='M11 18.2h2'/%3E%3C/svg%3E"); }
+.device-label[data-device="watch"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='6.2' width='12' height='11.6' rx='3.2'/%3E%3Cpath d='M8.6 6.2 9.3 2.5h5.4l.7 3.7M8.6 17.8l.7 3.7h5.4l.7-3.7M18 10.5h1.2'/%3E%3C/svg%3E"); }
+.device-label[data-device="tv"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2.5' y='4' width='19' height='12.6' rx='1.8'/%3E%3Cpath d='M8.5 20.3h7M12 16.6v3.7'/%3E%3C/svg%3E"); }
 
 .points { list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 16px; }
 .points li { position: relative; padding-left: 30px; font-size: 16.5px; line-height: 1.5; color: var(--text-2); }
@@ -562,7 +585,7 @@ figcaption b { color: var(--value); font-weight: 600; }
 }
 
 /* ------------------------------------------------------------------------------------------
-   Logbook (an iPad with its pages as tabs underneath) and alerts */
+   Logbook (an iPad with its pages as tabs underneath) */
 
 .stage {
   container-type: inline-size;
@@ -581,75 +604,10 @@ figcaption b { color: var(--value); font-weight: 600; }
   font-size: 15px; line-height: 1.5; text-align: center; color: var(--text-2);
 }
 
-.lockphone { --w: clamp(240px, 22vw, 290px); justify-self: center; }
-
-.lock-screen {
-  position: relative; isolation: isolate; overflow: hidden;
-  aspect-ratio: 1206 / 2622;
-  display: flex; flex-direction: column; align-items: center;
-  padding: 15% 4.5% 5%;
-  border-radius: calc(var(--w) * 0.138);
-  background: #1E545A;
-  color: #fff;
-  font-family: var(--sans);
-}
-.lock-screen canvas.topo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
-.lock-screen p { margin: 0; }
-.lock-date { font-size: calc(var(--w) * 0.054); font-weight: 600; opacity: 0.88; }
-.lock-time { font-size: calc(var(--w) * 0.26); font-weight: 700; line-height: 1; letter-spacing: -0.035em; }
-.lock-stack { width: 100%; margin-top: auto; display: grid; gap: calc(var(--w) * 0.022); }
-
-.note {
-  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: calc(var(--w) * 0.03);
-  padding: calc(var(--w) * 0.035);
-  border-radius: calc(var(--w) * 0.06);
-  background: rgba(246, 246, 248, 0.82);
-  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-  color: #1d1d1f;
-  font-size: calc(var(--w) * 0.039); line-height: 1.3;
-}
-.note img { width: calc(var(--w) * 0.088); height: auto; border-radius: 23%; }
-.note-title { font-weight: 650; }
-.note time { font-size: 0.88em; color: #6e6e73; }
-
-.activity {
-  padding: calc(var(--w) * 0.04);
-  border-radius: calc(var(--w) * 0.07);
-  background: rgba(10, 14, 20, 0.88);
-  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-  font-family: var(--mono); color: #E7EAF0;
-}
-.activity-head {
-  display: flex; align-items: center; gap: 6px;
-  font-size: calc(var(--w) * 0.034); font-weight: 700; color: #8790A0;
-}
-.activity-head svg { width: 1.3em; height: 1.3em; fill: none; stroke: #FF6B5E; stroke-width: 2; stroke-linecap: round; }
-.activity-head circle { fill: #FF6B5E; stroke: none; }
-.activity-head span:first-of-type { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.activity-head .count { margin-left: auto; font-weight: 600; white-space: nowrap; }
-.activity-flight { display: flex; justify-content: space-between; align-items: flex-end; margin: calc(var(--w) * 0.025) 0; }
-.activity .op { font-size: calc(var(--w) * 0.03); font-weight: 600; text-transform: uppercase; color: #8790A0; }
-.activity-flight b { font-size: calc(var(--w) * 0.078); font-weight: 800; color: #A8A4FF; }
-.activity-flight p span { margin-left: 0.5em; font-size: calc(var(--w) * 0.044); font-weight: 700; color: #8C9BFF; }
-.activity .where { text-align: right; }
-.activity .where b { display: block; font-size: calc(var(--w) * 0.05); color: #E7EAF0; }
-.activity .where span { font-size: calc(var(--w) * 0.034); color: #8790A0; }
-.activity-foot {
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: calc(var(--w) * 0.036); font-weight: 700; color: #A8A4FF;
-}
-.activity .stop { padding: 0.25em 0.9em; border-radius: 999px; background: rgba(255, 107, 94, 0.18); color: #FF6B5E; }
-
 /* ------------------------------------------------------------------------------------------
-   Night: Apple Watch and Apple TV */
+   Apple Watch and Apple TV: one run, the TV straight on from the Watch */
 
-.night {
-  --paper: #111722;
-  position: relative; isolation: isolate;
-  background: var(--paper);
-  color: var(--value);
-}
-.night #tv { padding-top: 0; }
+.watch-tv #tv { padding-top: 0; }
 
 .watches {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -659,25 +617,43 @@ figcaption b { color: var(--value); font-weight: 600; }
 .watches figure { display: flex; flex-direction: column; align-items: center; }
 .watches figcaption { max-width: 17rem; margin-top: 34px; text-align: center; }
 
-.night .tv { margin-top: clamp(48px, 6vw, 72px); }
-.tv-views, .showcase-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 28px; }
+.watch-tv .tv { margin-top: clamp(48px, 6vw, 72px); }
+/* The tabs under a switcher's screen: text pills in one capsule, like the app's segmented
+   controls. The chosen pill fills with ink from the left while it's on screen and hands over
+   to the next when full (js/site.js); once someone picks a tab it just stays filled. */
+.tv-views, .showcase-tabs {
+  display: flex; gap: 4px;
+  width: fit-content; max-width: 100%;
+  margin: clamp(26px, 3vw, 36px) auto 0; padding: 5px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--value) 16%, transparent);
+  background: color-mix(in srgb, var(--value) 6%, transparent);
+}
 .tv-views button, .showcase-tabs button {
-  display: flex; flex-direction: column; align-items: center; gap: 9px;
-  padding: 0; border: 0; background: none; cursor: pointer;
-  font: 600 13px var(--mono); color: var(--caption);
+  position: relative; isolation: isolate; overflow: hidden;
+  padding: 12px 26px; border: 0; border-radius: 999px;
+  background: none; cursor: pointer;
+  font: 700 16px/1.2 var(--mono); color: var(--text-2); white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
-.tv-views button:focus-visible, .showcase-tabs button:focus-visible { outline: none; }
-.tv-views img, .showcase-tabs img {
-  display: block; width: clamp(104px, 13vw, 168px); height: auto; aspect-ratio: 16 / 9; object-fit: cover;
-  border-radius: 8px; opacity: 0.5;
-  outline: 2px solid transparent; outline-offset: 3px;
-  transition: opacity 0.2s ease, outline-color 0.2s ease;
+.tv-views button:focus-visible, .showcase-tabs button:focus-visible { outline-offset: 2px; border-radius: 999px; }
+:is(.tv-views, .showcase-tabs) button:hover { color: var(--value); background: color-mix(in srgb, var(--value) 8%, transparent); }
+:is(.tv-views, .showcase-tabs) button[aria-selected="true"] {
+  color: var(--value);
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
 }
-.showcase-tabs img { aspect-ratio: 1600 / 1103; }
-:is(.tv-views, .showcase-tabs) button:hover img { opacity: 0.8; }
-:is(.tv-views, .showcase-tabs) button[aria-selected="true"] img { opacity: 1; outline-color: var(--ink); }
-:is(.tv-views, .showcase-tabs) button[aria-selected="true"] span { color: var(--value); }
-:is(.tv-views, .showcase-tabs) button:focus-visible img { outline-color: var(--signal); }
+
+.tab-progress { position: absolute; inset: 0; z-index: -1; }
+.tab-progress b {
+  display: block; height: 100%;
+  background: color-mix(in srgb, var(--ink) 24%, transparent);
+  transform: scaleX(0); transform-origin: left;
+}
+[aria-selected="true"] .tab-progress b { transform: scaleX(1); }
+.is-playing [aria-selected="true"] .tab-progress b { animation: tab-dwell var(--dwell, 6s) linear forwards; }
+.is-paused [aria-selected="true"] .tab-progress b { animation-play-state: paused; }
+@keyframes tab-dwell { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 /* ------------------------------------------------------------------------------------------
    Close and footer */
@@ -744,11 +720,6 @@ figcaption b { color: var(--value); font-weight: 600; }
 :root[data-theme="dark"] .summary, :root[data-theme="dark"] .contact, :root[data-theme="dark"] .doc details {
   background: color-mix(in srgb, var(--paper) 92%, #fff 8%);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .summary,
-  :root:not([data-theme="light"]) .contact,
-  :root:not([data-theme="light"]) .doc details { background: color-mix(in srgb, var(--paper) 92%, #fff 8%); }
-}
 .summary { padding: 20px 24px; }
 .summary p { margin: 0; }
 
@@ -779,7 +750,7 @@ figcaption b { color: var(--value); font-weight: 600; }
 @media (max-width: 920px) {
   .split { grid-template-columns: minmax(0, 1fr); }
   .split.reverse > :first-child { order: 0; }
-  .split > .pair, .split > .tablet, .split > .pass-shadow, .split > .lockphone { margin-top: 8px; }
+  .split > .pair, .split > .tablet, .split > .pass-shadow { margin-top: 8px; }
 }
 
 @media (max-width: 760px) {
@@ -812,8 +783,8 @@ figcaption b { color: var(--value); font-weight: 600; }
   .watches { grid-auto-columns: 70%; }
   .watches .watch { --w: 180px; }
   .pair .phone { --w: min(54vw, 230px); }
-  .lockphone { --w: min(70vw, 280px); }
   .tablet { --w: min(100%, 420px); }
+  .tv-views button, .showcase-tabs button { padding: 9px 15px; font-size: 13px; }
 }
 
 @media (max-width: 400px) {

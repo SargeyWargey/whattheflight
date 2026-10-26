@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>What The Flight?</title>
 <meta name="description" content="Every aircraft in the sky around you, live, on a radar that turns as you turn. For iPhone, iPad, Apple Watch and Apple TV.">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0A0E14">
 <meta property="og:title" content="What The Flight?">
 <meta property="og:description" content="Every aircraft in the sky around you, live, on a radar that turns as you turn.">
@@ -20,16 +20,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
-<link rel="stylesheet" href="css/site.css?v=202610242235">
+<link rel="stylesheet" href="css/site.css?v=202610252112">
+<link rel="stylesheet" href="css/duo.css?v=202610252112">
 <script>
-  // Night by default; a switch to day is remembered per browser.
-  document.documentElement.dataset.theme = 'dark';
-  try { if (localStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
+  // Always opens at night; a switch to day lasts for this visit (this tab) only.
+  try { if (sessionStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
 </script>
-<script src="js/glyphs.js?v=202610242235" defer></script>
-<script src="js/topography.js?v=202610242235" defer></script>
-<script src="js/radar.js?v=202610242235" defer></script>
-<script src="js/site.js?v=202610242235" defer></script>
+<script src="js/glyphs.js?v=202610252112" defer></script>
+<script src="js/topography.js?v=202610252112" defer></script>
+<script src="js/radar.js?v=202610252112" defer></script>
+<script src="js/site.js?v=202610252112" defer></script>
+<script src="js/duo.js?v=202610252112" defer></script>
 </head>
 <body>
 
@@ -54,6 +55,7 @@
     <nav class="site-nav" aria-label="Sections">
       <a href="#radar">iPhone</a>
       <a href="#ipad">iPad</a>
+      <a href="#duo">Duo</a>
       <a href="#watch">Watch</a>
       <a href="#tv">TV</a>
       <a href="support.html">Support</a>
@@ -99,10 +101,10 @@
 <main>
 
 <!-- iPhone: the radar ------------------------------------------------------------------ -->
-<section class="section radar-section" id="radar" data-band>
+<section class="section radar-section" id="radar" data-band="violet">
   <div class="wrap split">
     <div class="copy">
-      <p class="device-label">iPhone</p>
+      <p class="device-label" data-device="iphone">iPhone</p>
       <h2>The nearest plane takes the center.</h2>
       <p>Flight number, airline, aircraft type, where it’s from and where it’s going, altitude, speed and how far away it is. Every other aircraft sits on the edge of the screen in its real compass direction, nose pointing the way it’s flying.</p>
       <ul class="points">
@@ -120,7 +122,7 @@
 </section>
 
 <!-- iPhone: details and search ---------------------------------------------------------- -->
-<section class="section alt" id="details" data-band="alt">
+<section class="section" id="details" data-band="green">
   <div class="wrap">
     <div class="copy wide">
       <h2>The full story, one tap away.</h2>
@@ -194,7 +196,7 @@
 </section>
 
 <!-- Logbook ---------------------------------------------------------------------------- -->
-<section class="section" id="logbook" data-band>
+<section class="section" id="logbook" data-band="amber">
   <div class="wrap" data-switcher>
     <div class="copy wide">
       <h2>Every plane that passes, logged.</h2>
@@ -205,56 +207,19 @@
       <figure class="device tablet landscape"><img src="img/screens/logbook-overview-ipad-dark.webp" alt="The logbook on iPad: today’s highlights, including a US Navy trainer and a first Boeing 787-8 Dreamliner, beside totals for aircraft spotted, airframes, types, airlines and countries, the badges closest to unlocking, the last 14 days and the aircraft seen most often." width="1600" height="1103" loading="lazy" data-switcher-screen></figure>
     </div>
     <div class="showcase-tabs" role="tablist" aria-label="Logbook pages">
-      <button type="button" role="tab" aria-selected="true" data-src="img/screens/logbook-overview-ipad-light.webp" data-src-dark="img/screens/logbook-overview-ipad-dark.webp" data-alt="The logbook on iPad: today’s highlights, including a US Navy trainer and a first Boeing 787-8 Dreamliner, beside totals for aircraft spotted, airframes, types, airlines and countries, the badges closest to unlocking, the last 14 days and the aircraft seen most often." data-caption="Today’s highlights beside your totals, the badges you’re closest to, the last two weeks and the planes you see most."><img src="img/screens/logbook-overview-ipad-dark.webp" alt="" loading="lazy"><span>Logbook</span></button>
-      <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-stats-ipad-light.webp" data-src-dark="img/screens/logbook-stats-ipad-dark.webp" data-alt="Stats on iPad: aircraft per day, best day, best hour and best streak, a large compass rose showing that 38% of the aircraft head east, and charts of the last 30 days and of how high they pass." data-caption="Which way they fly, when your sky is busiest and how high they pass."><img src="img/screens/logbook-stats-ipad-dark.webp" alt="" loading="lazy"><span>Stats</span></button>
-      <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-badges-ipad-light.webp" data-src-dark="img/screens/logbook-badges-ipad-dark.webp" data-alt="Badges on iPad: 16 of 25 unlocked, the three closest to unlocking, recently unlocked badges such as Around the World, and the Milestones and Rare Birds groups." data-caption="Badges to earn, from First Contact to Queen of the Skies, and the ones you’re closest to next."><img src="img/screens/logbook-badges-ipad-dark.webp" alt="" loading="lazy"><span>Achievements</span></button>
+      <button type="button" role="tab" aria-selected="true" data-src="img/screens/logbook-overview-ipad-light.webp" data-src-dark="img/screens/logbook-overview-ipad-dark.webp" data-alt="The logbook on iPad: today’s highlights, including a US Navy trainer and a first Boeing 787-8 Dreamliner, beside totals for aircraft spotted, airframes, types, airlines and countries, the badges closest to unlocking, the last 14 days and the aircraft seen most often." data-caption="Today’s highlights beside your totals, the badges you’re closest to, the last two weeks and the planes you see most."><span>Logbook</span></button>
+      <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-stats-ipad-light.webp" data-src-dark="img/screens/logbook-stats-ipad-dark.webp" data-alt="Stats on iPad: aircraft per day, best day, best hour and best streak, a large compass rose showing that 38% of the aircraft head east, and charts of the last 30 days and of how high they pass." data-caption="Which way they fly, when your sky is busiest and how high they pass."><span>Stats</span></button>
+      <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-badges-ipad-light.webp" data-src-dark="img/screens/logbook-badges-ipad-dark.webp" data-alt="Badges on iPad: 16 of 25 unlocked, the three closest to unlocking, recently unlocked badges such as Around the World, and the Milestones and Rare Birds groups." data-caption="Badges to earn, from First Contact to Queen of the Skies, and the ones you’re closest to next."><span>Achievements</span></button>
     </div>
     <p class="showcase-caption" data-switcher-caption aria-live="polite">Today’s highlights beside your totals, the badges you’re closest to, the last two weeks and the planes you see most.</p>
   </div>
 </section>
 
-<!-- Alerts ----------------------------------------------------------------------------- -->
-<section class="section alt" id="alerts" data-band="alt">
-  <div class="wrap split reverse">
-    <div class="copy">
-      <h2>A heads-up for the good stuff.</h2>
-      <p>Get an alert when a plane is about to pass right over you, or when something unusual is around: emergency squawks, military and government flights, air ambulances and rare aircraft. Sky Watch keeps an eye on the sky for up to two hours, with a Live Activity on your Lock Screen.</p>
-    </div>
-    <figure class="device phone lockphone" aria-label="A Lock Screen with two What The Flight? alerts and the Sky Watch Live Activity">
-        <div class="lock-screen">
-          <canvas class="topo" data-topo="remaster teal" data-topo-feature="260" aria-hidden="true"></canvas>
-          <p class="lock-date">Friday, October 23</p>
-          <p class="lock-time">9:41</p>
-          <div class="lock-stack">
-            <div class="note">
-              <img src="img/icon-512.png" alt="" width="30" height="30">
-              <div><p class="note-title">B6819 overhead in 2:05</p><p>Airbus A220-300 at 16,475 ft — look E, DTW → JFK.</p></div>
-              <time>now</time>
-            </div>
-            <div class="note">
-              <img src="img/icon-512.png" alt="" width="30" height="30">
-              <div><p class="note-title">LH403 is a Boeing 747-8</p><p>Boeing 747-8, 4 mi NE at 7,325 ft.</p></div>
-              <time>3m ago</time>
-            </div>
-            <div class="activity">
-              <p class="activity-head"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.2"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M4.9 4.9a10 10 0 0 0 0 14.2M19.1 4.9a10 10 0 0 1 0 14.2"/></svg><span>Sky Watch · Central Park</span><span class="count">14 in 10 mi</span></p>
-              <div class="activity-flight">
-                <div><p class="op">Delta Air Lines</p><p><b>DL5721</b><span>BOS → LGA</span></p></div>
-                <div class="where"><b>1 mi E</b><span>3,575 ft</span></div>
-              </div>
-              <p class="activity-foot"><span>Closest pass in 0:31</span><span class="stop">Stop</span></p>
-            </div>
-          </div>
-        </div>
-    </figure>
-  </div>
-</section>
-
 <!-- iPad --------------------------------------------------------------------------------- -->
-<section class="section" id="ipad" data-band>
+<section class="section" id="ipad" data-band="magenta">
   <div class="wrap split reverse">
     <div class="copy">
-      <p class="device-label">iPad</p>
+      <p class="device-label" data-device="ipad">iPad</p>
       <h2>Room for the whole sky.</h2>
       <p>On iPad the radar fills the screen, by day or by night. Turn it sideways with Map view on and a live map of the traffic sits beside the radar, turning as you turn.</p>
       <p>On a folding iPhone, open it halfway: radar on one side of the fold, map on the other.</p>
@@ -263,13 +228,111 @@
   </div>
 </section>
 
-<!-- Night: Apple Watch and Apple TV ---------------------------------------------------- -->
-<div class="night" data-band="night">
+<!-- iPhone Duo: each way you can hold it (js/duo.js) -------------------------------------- -->
+<section class="section" id="duo" data-band="violet">
+  <div class="wrap">
+    <div class="copy wide">
+      <p class="device-label" data-device="duo">iPhone Duo</p>
+      <h2>Half radar. Half map.</h2>
+      <p>Fold it shut and the radar keeps going on the cover screen. Open it halfway and it splits at the fold: the radar on one side, a live map of the same planes on the other. Open it flat for one big radar, or stand it on a table and let it keep watch.</p>
+    </div>
 
-  <section class="section" id="watch">
+    <figure class="duo" id="duo-demo" aria-label="What The Flight? on iPhone Duo: pick a way to hold it to see the layout for it">
+      <div class="duo-side">
+        <div class="duo-steps">
+          <button type="button" class="duo-step" aria-label="Previous way to hold it" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+          </button>
+          <button type="button" class="duo-step" aria-label="Next way to hold it">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+        </div>
+        <ul class="duo-list">
+          <li class="duo-item is-open" data-pose="fold">
+            <button type="button" class="duo-pill" aria-expanded="true" aria-controls="duo-c0">
+              <svg class="duo-icon duo-icon--slide" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="14"/><path d="M11.5 10l-4 4 4 4M16.5 10l4 4-4 4"/></svg>Open and close
+            </button>
+            <div class="duo-card" id="duo-c0">
+              <p><strong>Open and close.</strong> The radar follows the hinge. Shut, it runs on the cover screen. Partway open, the map joins it across the fold. Flat, the radar has the whole screen.</p>
+              <label class="duo-hint" for="duo-slider">Move the slider to open and close.</label>
+              <input class="duo-slider" id="duo-slider" type="range" min="0" max="1000" step="1" value="0" aria-valuetext="Closed">
+            </div>
+          </li>
+          <li class="duo-item" data-pose="book">
+            <button type="button" class="duo-pill" aria-expanded="false" aria-controls="duo-c1">
+              <svg class="duo-icon" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13"/><path d="M14 8.5v11M8.5 14h11"/></svg>Like a book
+            </button>
+            <div class="duo-card" id="duo-c1" hidden>
+              <p><strong>Like a book.</strong> Hold it half open and the radar takes the left page, the map the right, with the same planes on both. The buttons stand in the strip down the edge, under your thumb.</p>
+            </div>
+          </li>
+          <li class="duo-item" data-pose="flat">
+            <button type="button" class="duo-pill" aria-expanded="false" aria-controls="duo-c2">
+              <svg class="duo-icon" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13"/><path d="M14 8.5v11M8.5 14h11"/></svg>Landscape
+            </button>
+            <div class="duo-card" id="duo-c2" hidden>
+              <p><strong>Landscape.</strong> Open flat, one big radar fills the screen. Tap the map button at the top of the strip to swap in the map, with the flight on a card in the corner.</p>
+            </div>
+          </li>
+          <li class="duo-item" data-pose="tall">
+            <button type="button" class="duo-pill" aria-expanded="false" aria-controls="duo-c3">
+              <svg class="duo-icon" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13"/><path d="M14 8.5v11M8.5 14h11"/></svg>Portrait
+            </button>
+            <div class="duo-card" id="duo-c3" hidden>
+              <p><strong>Portrait.</strong> Turn it upright and the radar turns with it, the buttons in a bar along the bottom, as on iPhone.</p>
+            </div>
+          </li>
+          <li class="duo-item" data-pose="closed">
+            <button type="button" class="duo-pill" aria-expanded="false" aria-controls="duo-c4">
+              <svg class="duo-icon" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13"/><path d="M14 8.5v11M8.5 14h11"/></svg>Closed
+            </button>
+            <div class="duo-card" id="duo-c4" hidden>
+              <p><strong>Closed.</strong> Fold it shut and the cover screen picks up the radar where you left it, the buttons in the strip under the camera.</p>
+            </div>
+          </li>
+          <li class="duo-item" data-pose="table">
+            <button type="button" class="duo-pill" aria-expanded="false" aria-controls="duo-c5">
+              <svg class="duo-icon" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13"/><path d="M14 8.5v11M8.5 14h11"/></svg>Tabletop
+            </button>
+            <div class="duo-card" id="duo-c5" hidden>
+              <p><strong>Tabletop.</strong> Stand it half open on a table: the radar on the half that stands up, the map on the half lying flat. Leave it by the window and watch them go by.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- The Duo, built in 3D: two halves on a hinge. The left one folds over the right and
+           carries the cover screen on its back. Each half shows its side of the inner screen. -->
+      <div class="duo-stage" aria-hidden="true">
+        <div class="duo-view">
+          <div class="duo-rig">
+            <div class="duo-half duo-half--a">
+              <i class="duo-layer" style="--k:1"></i><i class="duo-layer" style="--k:2"></i><i class="duo-layer" style="--k:3"></i><i class="duo-layer" style="--k:4"></i><i class="duo-layer" style="--k:5"></i><i class="duo-layer" style="--k:6"></i><i class="duo-layer" style="--k:7"></i><i class="duo-layer" style="--k:8"></i><i class="duo-layer" style="--k:9"></i>
+              <div class="duo-face duo-face--in"><div class="duo-screen"><canvas></canvas></div></div>
+              <div class="duo-face duo-face--out"><div class="duo-cover"><canvas></canvas><span class="duo-camera"></span></div></div>
+            </div>
+            <div class="duo-half duo-half--b">
+              <i class="duo-layer" style="--k:1"></i><i class="duo-layer" style="--k:2"></i><i class="duo-layer" style="--k:3"></i><i class="duo-layer" style="--k:4"></i><i class="duo-layer" style="--k:5"></i><i class="duo-layer" style="--k:6"></i><i class="duo-layer" style="--k:7"></i><i class="duo-layer" style="--k:8"></i><i class="duo-layer" style="--k:9"></i>
+              <div class="duo-face duo-face--in"><div class="duo-screen"><canvas></canvas></div></div>
+              <div class="duo-face duo-face--back"><span class="duo-lenses"><i></i><i></i><i></i></span></div>
+            </div>
+            <div class="duo-spine"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+
+      <figcaption>It’s live. Tap a plane to bring it to the center, or drag the phone round and the radar turns with it.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- Apple Watch and Apple TV ----------------------------------------------------------- -->
+<div class="watch-tv">
+
+  <section class="section" id="watch" data-band="indigo">
     <div class="wrap">
       <div class="copy wide">
-        <p class="device-label">Apple Watch</p>
+        <p class="device-label" data-device="watch">Apple Watch</p>
         <h2>Point at a plane.</h2>
         <p>A radar on your wrist with its own GPS. Raise your arm toward an aircraft and the Watch tells you what it is, or pick one and let haptics lead you to it. Complications show what’s nearest at a glance.</p>
       </div>
@@ -290,10 +353,10 @@
     </div>
   </section>
 
-  <section class="section" id="tv">
+  <section class="section" id="tv" data-band="petrol">
     <div class="wrap" data-switcher>
       <div class="copy wide">
-        <p class="device-label">Apple TV</p>
+        <p class="device-label" data-device="tv">Apple TV</p>
         <h2>The sky on the big screen.</h2>
         <p>A radar, a map, or both side by side, with alerts read aloud when something flies over. Send your spot and the way your TV faces from your iPhone in one tap.</p>
       </div>
@@ -301,9 +364,9 @@
         <img src="img/screens/tv-split.webp" alt="Apple TV in Split view: United UA70 from Newark to Amsterdam on the radar, beside a map of New York traffic." width="2000" height="1125" loading="lazy" data-switcher-screen>
       </figure>
       <div class="tv-views" role="tablist" aria-label="Apple TV views">
-        <button type="button" role="tab" aria-selected="true" data-src="img/screens/tv-split.webp" data-alt="Apple TV in Split view: United UA70 from Newark to Amsterdam on the radar, beside a map of New York traffic."><img src="img/screens/tv-split.webp" alt="" loading="lazy"><span>Split</span></button>
-        <button type="button" role="tab" aria-selected="false" data-src="img/screens/tv-radar.webp" data-alt="The Apple TV radar: Austrian Airlines OS38 from Newark to Vienna, climbing, with about 37 aircraft around the edge."><img src="img/screens/tv-radar.webp" alt="" loading="lazy"><span>Radar</span></button>
-        <button type="button" role="tab" aria-selected="false" data-src="img/screens/tv-map.webp" data-alt="The full-screen Apple TV map with labelled traffic over New York and the UA70 card in the corner."><img src="img/screens/tv-map.webp" alt="" loading="lazy"><span>Map</span></button>
+        <button type="button" role="tab" aria-selected="true" data-src="img/screens/tv-split.webp" data-alt="Apple TV in Split view: United UA70 from Newark to Amsterdam on the radar, beside a map of New York traffic."><span>Split</span></button>
+        <button type="button" role="tab" aria-selected="false" data-src="img/screens/tv-radar.webp" data-alt="The Apple TV radar: Austrian Airlines OS38 from Newark to Vienna, climbing, with about 37 aircraft around the edge."><span>Radar</span></button>
+        <button type="button" role="tab" aria-selected="false" data-src="img/screens/tv-map.webp" data-alt="The full-screen Apple TV map with labelled traffic over New York and the UA70 card in the corner."><span>Map</span></button>
       </div>
     </div>
   </section>
