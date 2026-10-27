@@ -9,18 +9,22 @@
 <meta name="description" content="The What The Flight? privacy policy: no accounts, no ads, no tracking.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0A0E14">
+<link rel="canonical" href="https://sargeywargey.github.io/whattheflight/privacy.html">
+<meta property="og:title" content="Privacy · What The Flight?">
+<meta property="og:description" content="The What The Flight? privacy policy: no accounts, no ads, no tracking.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sargeywargey.github.io/whattheflight/privacy.html">
+<meta property="og:image" content="https://sargeywargey.github.io/whattheflight/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="img/favicon.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
-<link rel="stylesheet" href="css/site.css?v=202610252112">
+<link rel="stylesheet" href="css/site.css?v=202610262139">
 <script>
   // Always opens at night; a switch to day lasts for this visit (this tab) only.
   try { if (sessionStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
 </script>
-<script src="js/topography.js?v=202610252112" defer></script>
-<script src="js/site.js?v=202610252112" defer></script>
+<script src="js/topography.js?v=202610262139" defer></script>
+<script src="js/site.js?v=202610262139" defer></script>
 </head>
 <body>
 
@@ -29,7 +33,7 @@
 <header class="page-top" data-band>
   <div class="site-header">
     <a class="brand" href="./" aria-label="What The Flight? home">
-      <img src="img/icon-512.png" alt="" width="36" height="36">
+      <img src="img/icon-36.png" srcset="img/icon-72.png 2x, img/icon-108.png 3x" alt="" width="36" height="36">
       <span>What The Flight?</span>
     </a>
     <nav class="site-nav" aria-label="Pages">
@@ -43,7 +47,7 @@
   </div>
   <div class="wrap page-title">
     <h1>Your sky, not your data</h1>
-    <p>Privacy policy, effective October 23, 2026</p>
+    <p>Privacy policy, effective October 26, 2026</p>
   </div>
 </header>
 
@@ -64,25 +68,29 @@
     <li>Place names in your logbook come from Apple’s geocoding service, and maps come from Apple Maps, both under <a href="https://www.apple.com/legal/privacy/">Apple’s privacy policy</a>.</li>
   </ul>
 
+  <h2>Searching for an aircraft</h2>
+  <p>When you search for a flight, pin an aircraft that’s far away, or ask Where Is It Now?, the app asks Flightradar24 for that flight number, callsign or tail number, wherever it is in the world. Nothing about you is sent beyond the IP address every internet request has.</p>
+
   <h2>Aircraft photos</h2>
   <p>Aircraft photos come from Planespotters.net. To find one, the app sends the aircraft’s registration or transponder code. Nothing about you is sent beyond the IP address every internet request has.</p>
 
   <h2>Your logbook and Sky View photos</h2>
   <ul>
     <li>Your logbook (the aircraft you’ve seen, where and when) and the photos you take in Sky View are stored on your device.</li>
-    <li>If you turn on <strong>Sync with iCloud</strong>, they’re also stored in your private iCloud account so your iPhone, iPad and Apple TV share one logbook. Your pinned aircraft sync the same way. Only you can read your private iCloud data. I can’t see it.</li>
+    <li>If you turn on <strong>Sync with iCloud</strong>, they’re also stored in your private iCloud account so your iPhone, iPad and Apple TV share one logbook. Only you can read your private iCloud data. I can’t see it.</li>
+    <li>Your pinned and favorite aircraft are kept in your private iCloud too, so they follow you to your iPad, Apple TV and Apple Watch, whether or not the logbook syncs. They’re a list of tail numbers and flight numbers, nothing about where you were.</li>
     <li>When you save a Sky View photo to your photo library, it includes the flight details and the location where you took it, like any camera photo. The app can only add photos to your library. It can’t read them.</li>
   </ul>
 
   <h2>Camera, motion and local network</h2>
   <ul>
     <li><strong>Camera:</strong> Sky View shows the camera image with labels on top. The image is processed on your device to find aircraft and is never uploaded.</li>
-    <li><strong>Motion (Apple Watch):</strong> Point &amp; Find reads the Watch’s motion sensors on the Watch to tell which way your arm points.</li>
+    <li><strong>Motion:</strong> on iPhone, Sky View and lifting the phone to open it use the motion sensors to tell where the camera points, and linking an Apple TV uses them to tell which way the TV faces. On Apple Watch, Identify and Find read them to tell which way your arm points. Motion readings are used on the device and never stored or sent.</li>
     <li><strong>Local network:</strong> linking your iPhone to your Apple TV sends your location and the direction your TV faces directly to the Apple TV on your own network. It doesn’t go over the internet.</li>
   </ul>
 
   <h2>Notifications, widgets and Siri</h2>
-  <p>Alerts are created on your device. Widgets, the Live Activity and Siri read the latest radar data that the app shares with them on your device.</p>
+  <p>Alerts are created on your device, and spoken alerts are read by the device’s own voice. Widgets, Apple Watch complications, Siri and the Apple TV Top Shelf ask Flightradar24 for the traffic around the spot the app last watched, the same way the app does. The app shares that spot with them on your device. The Live Activity shows what the app already has.</p>
 
   <h2>What I don’t do</h2>
   <ul>
@@ -106,8 +114,8 @@
 <footer class="site-footer" data-band="footer">
   <div class="wrap">
     <div class="footer-top">
-      <a class="brand" href="./"><img src="img/icon-512.png" alt="" width="28" height="28"><span>What The Flight?</span></a>
-      <nav aria-label="Footer"><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
+      <a class="brand" href="./"><img src="img/icon-72.png" srcset="img/icon-72.png 2x, img/icon-108.png 3x" alt="" width="28" height="28"><span>What The Flight?</span></a>
+      <nav aria-label="Footer"><a href="whats-new.html">What’s new</a><a href="press.html">Press</a><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
     </div>
     <p>Flight data from Flightradar24. Aircraft photos from Planespotters.net, credited to each photographer. Airline data from OpenFlights (ODbL) and airport data from OurAirports.</p>
     <p>What The Flight? is for curiosity, not navigation. © 2026 Josh Sargent.</p>

@@ -30,6 +30,23 @@
     label();
   }
 
+  // Screenshots with a day and a night version show the one that matches the page:
+  // <img src="…-dark" data-src-light="…" data-src-dark="…">, with data-alt-light / data-alt-dark
+  // when the two pictures differ. The HTML names the night one, which is how every page opens,
+  // and they're lazy, so a visitor only fetches the look they see.
+  const themed = [...document.querySelectorAll('img[data-src-light][data-src-dark]')];
+  function showThemed() {
+    const look = isNight() ? 'Dark' : 'Light';
+    themed.forEach((img) => {
+      const src = img.dataset[`src${look}`];
+      if (img.getAttribute('src') !== src) img.setAttribute('src', src);
+      const alt = img.dataset[`alt${look}`];
+      if (alt) img.alt = alt;
+    });
+  }
+  showThemed();
+  window.addEventListener('wtf:theme', showThemed);
+
   // Picture switchers (the logbook pages, the Apple TV views): tabs under one screen. A tab
   // with data-src-dark shows that picture in the night look.
   //
@@ -49,8 +66,19 @@
     const srcOf = (tab) => (isNight() && tab.dataset.srcDark) || tab.dataset.src;
     const selected = () => tabs.find((t) => t.getAttribute('aria-selected') === 'true') || tabs[0];
 
+    // The picture is the tabs' one panel: each tab names it, and it's labelled by the chosen tab.
+    const panel = screen.closest('figure') || screen;
+    if (!panel.id) panel.id = `switcher-${document.querySelectorAll('[role=tabpanel]').length + 1}`;
+    panel.setAttribute('role', 'tabpanel');
+    panel.tabIndex = 0;
+    tabs.forEach((t, i) => {
+      if (!t.id) t.id = `${panel.id}-tab-${i + 1}`;
+      t.setAttribute('aria-controls', panel.id);
+    });
+
     function show(tab) {
       tabs.forEach((t) => { t.setAttribute('aria-selected', String(t === tab)); t.tabIndex = t === tab ? 0 : -1; });
+      panel.setAttribute('aria-labelledby', tab.id);
       if (caption && tab.dataset.caption) caption.textContent = tab.dataset.caption;
       const src = srcOf(tab);
       if (screen.getAttribute('src') === src) {
@@ -114,10 +142,11 @@
       tab.addEventListener('click', () => { stop(); show(tab); });
       tab.addEventListener('keydown', (e) => {
         const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-        if (!step) return;
+        const jump = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -1;
+        if (!step && jump < 0) return;
         e.preventDefault();
         stop();
-        const next = tabs[(i + step + tabs.length) % tabs.length];
+        const next = jump >= 0 ? tabs[jump] : tabs[(i + step + tabs.length) % tabs.length];
         next.focus();
         show(next);
       });

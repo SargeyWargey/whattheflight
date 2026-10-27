@@ -14,23 +14,44 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sargeywargey.github.io/whattheflight/">
 <meta property="og:image" content="https://sargeywargey.github.io/whattheflight/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="What The Flight? over a teal contour map, with aircraft and their distances around a radar ring.">
+<meta property="og:site_name" content="What The Flight?">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://sargeywargey.github.io/whattheflight/">
+<!-- At launch, the Smart App Banner in Safari on iPhone and iPad (README, "Before publishing"):
+<meta name="apple-itunes-app" content="app-id=APP_ID"> -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  "name": "What The Flight?",
+  "description": "Every aircraft in the sky around you, live, on a radar that turns as you turn. For iPhone, iPad, Apple Watch and Apple TV.",
+  "url": "https://sargeywargey.github.io/whattheflight/",
+  "image": "https://sargeywargey.github.io/whattheflight/img/icon-512.png",
+  "screenshot": "https://sargeywargey.github.io/whattheflight/img/og.jpg",
+  "applicationCategory": "TravelApplication",
+  "operatingSystem": "iOS 18.5, iPadOS 18.5, watchOS 11, tvOS 18",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": { "@type": "Person", "name": "Josh Sargent" }
+}
+</script>
 <link rel="icon" href="img/favicon.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
-<link rel="stylesheet" href="css/site.css?v=202610252112">
-<link rel="stylesheet" href="css/duo.css?v=202610252112">
+<link rel="stylesheet" href="css/site.css?v=202610262139">
+<link rel="stylesheet" href="css/duo.css?v=202610262139">
+<link rel="stylesheet" href="css/features.css?v=202610262139">
 <script>
   // Always opens at night; a switch to day lasts for this visit (this tab) only.
   try { if (sessionStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
 </script>
-<script src="js/glyphs.js?v=202610252112" defer></script>
-<script src="js/topography.js?v=202610252112" defer></script>
-<script src="js/radar.js?v=202610252112" defer></script>
-<script src="js/site.js?v=202610252112" defer></script>
-<script src="js/duo.js?v=202610252112" defer></script>
+<script src="js/glyphs.js?v=202610262139" defer></script>
+<script src="js/topography.js?v=202610262139" defer></script>
+<script src="js/radar.js?v=202610262139" defer></script>
+<script src="js/site.js?v=202610262139" defer></script>
+<script src="js/duo.js?v=202610262139" defer></script>
+<script src="js/features.js?v=202610262139" defer></script>
 </head>
 <body>
 
@@ -49,7 +70,7 @@
   </svg>
   <header class="site-header">
     <a class="brand" href="./" aria-label="What The Flight? home">
-      <img src="img/icon-512.png" alt="" width="36" height="36">
+      <img src="img/icon-36.png" srcset="img/icon-72.png 2x, img/icon-108.png 3x" alt="" width="36" height="36">
       <span>What The Flight?</span>
     </a>
     <nav class="site-nav" aria-label="Sections">
@@ -106,17 +127,17 @@
     <div class="copy">
       <p class="device-label" data-device="iphone">iPhone</p>
       <h2>The nearest plane takes the center.</h2>
-      <p>Flight number, airline, aircraft type, where it’s from and where it’s going, altitude, speed and how far away it is. Every other aircraft sits on the edge of the screen in its real compass direction, nose pointing the way it’s flying.</p>
+      <p>Flight number, airline, aircraft type, what it’s doing (climbing out, cruising, on approach), where it’s from and where it’s going, altitude, speed and how far away it is. Every other aircraft sits on the edge of the screen in its real compass direction, nose pointing the way it’s flying.</p>
       <ul class="points">
         <li><b>Turn and the sky turns with you.</b> Icons slide around the edge, so whatever’s at the top is in front of you.</li>
         <li><b>Swipe, tap, hold.</b> Swipe for the next one out, tap any plane to bring it in, hold to pin it.</li>
-        <li><b>Your radius.</b> Anything from 2 to 100 miles.</li>
+        <li><b>Your radius.</b> Anything from 2 to 100 miles, in miles or kilometers.</li>
         <li><b>Day and night.</b> Paper and ink by day, a night radar after dark.</li>
       </ul>
     </div>
     <div class="pair">
-      <figure class="device phone back"><img src="img/screens/iphone-radar-dark.webp" alt="The radar in dark mode: JetBlue B6819 from Detroit to New York JFK in the center, 2 miles away and closing, with about 26 aircraft around the edge." width="660" height="1435" loading="lazy"></figure>
-      <figure class="device phone front"><img src="img/screens/iphone-radar-light.webp" alt="The radar in light mode: Air Canada AC718 from Toronto to LaGuardia in the center, an Airbus A220-300 at 3,575 feet, with aircraft and mile labels around the edge." width="660" height="1435" loading="lazy"></figure>
+      <figure class="device phone back"><img src="img/screens/iphone-radar-light.webp" data-src-light="img/screens/iphone-radar-dark.webp" data-src-dark="img/screens/iphone-radar-light.webp" alt="The radar in light mode: Air Canada AC718 from Toronto to LaGuardia in the center, an Airbus A220-300 at 3,575 feet, with aircraft and mile labels around the edge." data-alt-light="The radar in dark mode: JetBlue B6819 from Detroit to New York JFK in the center, 2 miles away and closing, with about 26 aircraft around the edge." data-alt-dark="The radar in light mode: Air Canada AC718 from Toronto to LaGuardia in the center, an Airbus A220-300 at 3,575 feet, with aircraft and mile labels around the edge." width="660" height="1435" loading="lazy"></figure>
+      <figure class="device phone front"><img src="img/screens/iphone-radar-dark.webp" data-src-light="img/screens/iphone-radar-light.webp" data-src-dark="img/screens/iphone-radar-dark.webp" alt="The radar in dark mode: JetBlue B6819 from Detroit to New York JFK in the center, 2 miles away and closing, with about 26 aircraft around the edge." data-alt-light="The radar in light mode: Air Canada AC718 from Toronto to LaGuardia in the center, an Airbus A220-300 at 3,575 feet, with aircraft and mile labels around the edge." data-alt-dark="The radar in dark mode: JetBlue B6819 from Detroit to New York JFK in the center, 2 miles away and closing, with about 26 aircraft around the edge." width="660" height="1435" loading="lazy"></figure>
     </div>
   </div>
 </section>
@@ -130,16 +151,41 @@
     </div>
     <div class="gallery">
       <figure>
-        <div class="device phone"><img src="img/screens/iphone-detail.webp" alt="Flight details for JetBlue B6819: a map of the aircraft east of Manhattan with its path, and tiles for altitude, vertical speed, speed and track." width="660" height="1435" loading="lazy"></div>
+        <div class="device phone"><img src="img/screens/iphone-detail-dark.webp" data-src-light="img/screens/iphone-detail.webp" data-src-dark="img/screens/iphone-detail-dark.webp" alt="Flight details for Delta DL168, a Boeing 767-400 climbing out of JFK for Barcelona: a map of the aircraft over New York with its path, and tiles for altitude, vertical speed, speed and track." width="660" height="1435" loading="lazy"></div>
         <figcaption><b>Right now.</b> Where it is, how high, how fast, and the path it’s on.</figcaption>
       </figure>
       <figure>
-        <div class="device phone"><img src="img/screens/iphone-route.webp" alt="The full route of JetBlue B6371 from LaGuardia to Fort Lauderdale drawn down the East Coast." width="660" height="1435" loading="lazy"></div>
+        <div class="device phone"><img src="img/screens/iphone-route-dark.webp" data-src-light="img/screens/iphone-route.webp" data-src-dark="img/screens/iphone-route-dark.webp" alt="The full route of Delta DL168 from JFK to Barcelona, drawn across the North Atlantic." width="660" height="1435" loading="lazy"></div>
         <figcaption><b>The whole trip.</b> Switch to Full Route to see where it’s been and where it’s headed.</figcaption>
       </figure>
       <figure>
-        <div class="device phone"><img src="img/screens/iphone-search.webp" alt="Searching for UAL: four United flights in range, seven just outside and more worldwide." width="660" height="1435" loading="lazy"></div>
+        <div class="device phone"><img src="img/screens/iphone-search-dark.webp" data-src-light="img/screens/iphone-search.webp" data-src-dark="img/screens/iphone-search-dark.webp" alt="Searching for UAL: four United flights in range, five just outside and more worldwide." width="660" height="1435" loading="lazy"></div>
         <figcaption><b>Anywhere in the world.</b> Search by flight number, callsign or tail number. Pin up to five and they stay on your radar’s edge wherever they are.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- Favorites, pins and Where Is It Now? (css/features.css) ----------------------------- -->
+<section class="section" id="favorites" data-band="gold">
+  <div class="wrap">
+    <div class="copy wide">
+      <h2>Your favorites, in yellow.</h2>
+      <p>Tap Favorite on any aircraft and it’s called out in yellow wherever it turns up: its icon on the radar and the map, a heart by its flight number, its name in your logbook. A favorite is the airframe itself, so it stays yellow whatever flight it’s on.</p>
+      <p>Pin up to five to keep them on the edge of your radar wherever they are in the world. For any that aren’t nearby, Where Is It Now? finds them. Favorites and pins follow you to iPad, Apple TV and Apple Watch.</p>
+    </div>
+    <div class="gallery">
+      <figure>
+        <div class="device phone"><img src="img/screens/iphone-favorite-dark.webp" data-src-light="img/screens/iphone-favorite.webp" data-src-dark="img/screens/iphone-favorite-dark.webp" alt="The radar with Icelandair FI623, a Boeing 737 MAX 9 from Reykjavik on approach to Newark, in the center with a yellow heart by Icelandair. Its icon and another favorite’s are yellow among the blue aircraft on the edge." width="660" height="1435" loading="lazy"></div>
+        <figcaption><b>Yellow, wherever it flies.</b> A favorite’s icon turns yellow on the radar and the map, with a heart by its name.</figcaption>
+      </figure>
+      <figure>
+        <div class="device phone"><img src="img/screens/iphone-favorites-list-dark.webp" data-src-light="img/screens/iphone-favorites-list.webp" data-src-dark="img/screens/iphone-favorites-list-dark.webp" alt="The Aircraft list with five favorites first: FI623, UA3714 and EI100 flying, then G-XLEI, an Airbus A380-800, and N249BA, a Boeing 747 Dreamlifter, marked not nearby with a Where is it now? link." width="660" height="1435" loading="lazy"></div>
+        <figcaption><b>First in the list.</b> Favorites lead the Aircraft list: live when they’re close, one tap from Where Is It Now? when they’re not.</figcaption>
+      </figure>
+      <figure>
+        <div class="device phone"><img src="img/screens/iphone-where-dark.webp" data-src-light="img/screens/iphone-where.webp" data-src-dark="img/screens/iphone-where-dark.webp" alt="Where Is It Now? for United UA2838: in the air from LaGuardia to Chicago O’Hare, 336 miles west, on a map with 341 miles flown and 402 to go, at 36,000 feet." width="660" height="1435" loading="lazy"></div>
+        <figcaption><b>Where is it now?</b> In the air or on the ground, on a map, and how far it is from you.</figcaption>
       </figure>
     </div>
   </div>
@@ -151,7 +197,7 @@
     <div class="copy">
       <h2>Raise your iPhone to the sky.</h2>
       <p>Sky View opens the camera and labels the aircraft you can actually see, right where they are. Line one up to lock on, zoom in and take a photo.</p>
-      <p>Every photo is filed in your logbook as a boarding pass with the flight, the aircraft and the moment you spotted it, ready to share.</p>
+      <p>Every photo is filed in your logbook, under Photos and on that aircraft’s own page, as a boarding pass with the flight, the aircraft and the moment you spotted it, ready to share.</p>
     </div>
 
     <div class="pass-shadow">
@@ -195,23 +241,148 @@
   </div>
 </section>
 
+<!-- Alerts and Sky Watch (css/features.css, js/features.js) ------------------------------ -->
+<section class="section" id="alerts" data-band="coral">
+  <div class="wrap split reverse">
+    <div class="copy">
+      <h2>Know before it’s overhead.</h2>
+      <p>Get a heads-up a couple of minutes before an aircraft passes right over you, and whenever something unusual is around: an emergency squawk, a military or government flight, an air ambulance or a rare aircraft.</p>
+      <p>Heading out? Turn on Sky Watch and the app keeps watching with your iPhone in your pocket, for up to two hours. The next aircraft heading your way counts down on your Lock Screen and in the Dynamic Island.</p>
+      <ul class="points">
+        <li><b>Your idea of overhead.</b> Choose how close an aircraft has to come before it counts.</li>
+        <li><b>On your wrist.</b> Alerts reach Apple Watch, where Find in the Sky points you straight at the aircraft.</li>
+        <li><b>On the big screen.</b> Apple TV shows them on the radar and can read them aloud.</li>
+      </ul>
+    </div>
+    <figure class="device phone alerts-phone">
+      <div class="lock-screen" role="img" aria-label="An iPhone Lock Screen with an alert, UA1805 overhead in 2:30, a Boeing 737-800 at 2,600 feet, look southwest, Houston to LaGuardia. Below it the Sky Watch Live Activity shows United UA1805 2 miles southwest, counting down to its closest pass, with a Stop button.">
+        <canvas class="topo" data-topo="survey teal" data-topo-feature="220" aria-hidden="true"></canvas>
+        <span class="ls-island" aria-hidden="true"></span>
+        <p class="ls-date">Monday, October 26</p>
+        <p class="ls-time">9:41</p>
+        <div class="ls-stack">
+          <div class="ls-note">
+            <img src="img/icon-108.png" alt="" width="38" height="38" loading="lazy">
+            <div>
+              <p class="ls-head"><b>UA1805 overhead in 2:30</b><small>1m ago</small></p>
+              <p class="ls-body">Boeing 737-800 at 2,600 ft — look SW, IAH → LGA.</p>
+            </div>
+          </div>
+          <div class="ls-activity">
+            <p class="la-top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1.6" fill="#FF6B5E" stroke="none"/><path d="M8.2 8.2a5.4 5.4 0 0 0 0 7.6M15.8 8.2a5.4 5.4 0 0 1 0 7.6M5.4 5.4a9.3 9.3 0 0 0 0 13.2M18.6 5.4a9.3 9.3 0 0 1 0 13.2"/></svg><span>Sky Watch · New York</span><span>7 in 10 mi</span></p>
+            <div class="la-main">
+              <div>
+                <span class="la-op">United Airlines</span>
+                <p class="la-id"><b>UA1805</b><span>IAH → LGA</span></p>
+              </div>
+              <div class="la-where"><b>2 mi SW</b><span>2,600 ft</span></div>
+            </div>
+            <div class="la-foot">
+              <span class="la-count"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><path d="M12 2v4.5M12 17.5V22M2 12h4.5M17.5 12H22"/></svg>Closest pass in <span data-countdown>1:42</span></span>
+              <span class="la-stop"><i></i>Stop</span>
+            </div>
+          </div>
+        </div>
+        <span class="ls-bottom" aria-hidden="true"><i></i><i></i></span>
+        <span class="ls-home" aria-hidden="true"></span>
+      </div>
+    </figure>
+  </div>
+</section>
+
 <!-- Logbook ---------------------------------------------------------------------------- -->
 <section class="section" id="logbook" data-band="amber">
   <div class="wrap" data-switcher>
     <div class="copy wide">
       <h2>Every plane that passes, logged.</h2>
-      <p>Every aircraft that comes inside your radius goes in your logbook: when and where you saw it, how close it came, and whether it was a first. Dig into the numbers, chase records and earn badges, from First Contact to Queen of the Skies. It all syncs across iPhone, iPad and Apple TV with iCloud.</p>
+      <p>Every aircraft that comes inside your radius goes in your logbook: when and where you saw it, how close it came, and whether it was a first. Dig into the numbers for each place you watch from, chase records and earn 46 badges, from First Contact to Queen of the Skies. It all syncs across iPhone, iPad and Apple TV with iCloud.</p>
     </div>
 
     <div class="stage">
-      <figure class="device tablet landscape"><img src="img/screens/logbook-overview-ipad-dark.webp" alt="The logbook on iPad: today’s highlights, including a US Navy trainer and a first Boeing 787-8 Dreamliner, beside totals for aircraft spotted, airframes, types, airlines and countries, the badges closest to unlocking, the last 14 days and the aircraft seen most often." width="1600" height="1103" loading="lazy" data-switcher-screen></figure>
+      <figure class="device tablet landscape"><img src="img/screens/logbook-overview-ipad-dark.webp" alt="The logbook on iPad: today’s highlights, including a US Navy trainer and a first Boeing 787-8 Dreamliner, beside totals for aircraft spotted, airframes, types, airlines and countries, the badges closest to unlocking, the last 14 days, records such as the closest pass and the highest aircraft, and the aircraft seen most often." width="1600" height="1103" loading="lazy" data-switcher-screen></figure>
     </div>
     <div class="showcase-tabs" role="tablist" aria-label="Logbook pages">
-      <button type="button" role="tab" aria-selected="true" data-src="img/screens/logbook-overview-ipad-light.webp" data-src-dark="img/screens/logbook-overview-ipad-dark.webp" data-alt="The logbook on iPad: today’s highlights, including a US Navy trainer and a first Boeing 787-8 Dreamliner, beside totals for aircraft spotted, airframes, types, airlines and countries, the badges closest to unlocking, the last 14 days and the aircraft seen most often." data-caption="Today’s highlights beside your totals, the badges you’re closest to, the last two weeks and the planes you see most."><span>Logbook</span></button>
-      <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-stats-ipad-light.webp" data-src-dark="img/screens/logbook-stats-ipad-dark.webp" data-alt="Stats on iPad: aircraft per day, best day, best hour and best streak, a large compass rose showing that 38% of the aircraft head east, and charts of the last 30 days and of how high they pass." data-caption="Which way they fly, when your sky is busiest and how high they pass."><span>Stats</span></button>
-      <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-badges-ipad-light.webp" data-src-dark="img/screens/logbook-badges-ipad-dark.webp" data-alt="Badges on iPad: 16 of 25 unlocked, the three closest to unlocking, recently unlocked badges such as Around the World, and the Milestones and Rare Birds groups." data-caption="Badges to earn, from First Contact to Queen of the Skies, and the ones you’re closest to next."><span>Achievements</span></button>
+      <button type="button" role="tab" aria-selected="true" data-src="img/screens/logbook-overview-ipad-light.webp" data-src-dark="img/screens/logbook-overview-ipad-dark.webp" data-alt="The logbook on iPad: today’s highlights, including a US Navy trainer and a first Boeing 787-8 Dreamliner, beside totals for aircraft spotted, airframes, types, airlines and countries, the badges closest to unlocking, the last 14 days, records such as the closest pass and the highest aircraft, and the aircraft seen most often." data-caption="Today’s highlights beside your totals, the badges you’re closest to, the last two weeks, your records and the planes you see most."><span>Logbook</span></button>
+      <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-stats-ipad-light.webp" data-src-dark="img/screens/logbook-stats-ipad-dark.webp" data-alt="Stats on iPad across all places: a compass rose showing that 38% of the aircraft head east, a chart of when the sky is busiest through the day, and how high they pass." data-caption="Which way they fly, when your sky is busiest and how high they pass, for each place you watch from or all of them together."><span>Stats</span></button>
+      <button type="button" role="tab" aria-selected="false" data-src="img/screens/logbook-badges-ipad-light.webp" data-src-dark="img/screens/logbook-badges-ipad-dark.webp" data-alt="Badges on iPad: 27 of 46 unlocked, the three closest to unlocking, recently unlocked badges such as Six Continents and Around the World, and the Milestones group." data-caption="46 badges to earn, most with levels, from First Contact to Queen of the Skies, and the ones you’re closest to next."><span>Badges</span></button>
     </div>
-    <p class="showcase-caption" data-switcher-caption aria-live="polite">Today’s highlights beside your totals, the badges you’re closest to, the last two weeks and the planes you see most.</p>
+    <p class="showcase-caption" data-switcher-caption aria-live="polite">Today’s highlights beside your totals, the badges you’re closest to, the last two weeks, your records and the planes you see most.</p>
+  </div>
+</section>
+
+<!-- Make it yours: topography, icons, widgets, Siri (css/features.css) ------------------ -->
+<section class="section" id="yours" data-band="green">
+  <div class="wrap">
+    <div class="copy wide">
+      <h2>Make it yours.</h2>
+      <p>Pick the map behind your radar and the icon on your Home Screen, keep the nearest aircraft on a widget, or just ask Siri.</p>
+    </div>
+    <div class="custom-grid">
+      <div class="custom-block">
+        <h3>Four maps, or plain paper</h3>
+        <p>Contour lines drift slowly behind the radar, like the tide, at the speed you choose. This page is drawn in Survey. Pick yours in Settings → Display → Topography.</p>
+        <ul class="topo-styles">
+          <li><div class="topo-tile"></div><b>Off</b><span>Plain paper</span></li>
+          <li><div class="topo-tile"><canvas class="topo" data-topo="remaster auto" data-topo-feature="150" aria-hidden="true"></canvas></div><b>Remaster</b><span>Big gentle hills, one line weight</span></li>
+          <li><div class="topo-tile"><canvas class="topo" data-topo="survey auto" data-topo-feature="150" aria-hidden="true"></canvas></div><b>Survey</b><span>A survey map, every fifth line heavier</span></li>
+          <li><div class="topo-tile"><canvas class="topo" data-topo="highlands auto" data-topo-feature="150" aria-hidden="true"></canvas></div><b>Highlands</b><span>Ridges and winding valleys, the most detail</span></li>
+          <li><div class="topo-tile"><canvas class="topo" data-topo="relief auto" data-topo-feature="150" aria-hidden="true"></canvas></div><b>Relief</b><span>Survey lines over faint hill shading</span></li>
+        </ul>
+      </div>
+      <div class="custom-block">
+        <h3>Ten app icons</h3>
+        <p>The question-mark contrail in teal, night or the radar’s red, or one of seven more. Automatic, the standard icon, switches between Teal and Night with your iPhone’s appearance. Find them in Settings → Display → App Icon.</p>
+        <ul class="icon-grid">
+          <li><img class="day-art" src="img/icons/contrail-light.webp" alt="" width="80" height="80" loading="lazy"><b>Teal</b><span>Always teal</span></li>
+          <li><img class="day-art" src="img/icons/contrail-dark.webp" alt="" width="80" height="80" loading="lazy"><b>Night</b><span>Always night</span></li>
+          <li class="has-night"><img class="day-art" src="img/icons/signal-red.webp" alt="" width="80" height="80" loading="lazy"><img class="night-art" src="img/icons/signal-red-dark.webp" alt="" width="80" height="80" loading="lazy"><b>Signal Red</b><span>The radar’s red</span></li>
+          <li class="has-night"><img class="day-art" src="img/icons/edge-radar.webp" alt="" width="80" height="80" loading="lazy"><img class="night-art" src="img/icons/edge-radar-dark.webp" alt="" width="80" height="80" loading="lazy"><b>Edge Radar</b><span>The radar on paper</span></li>
+          <li class="has-night"><img class="day-art" src="img/icons/night-scope.webp" alt="" width="80" height="80" loading="lazy"><img class="night-art" src="img/icons/night-scope-dark.webp" alt="" width="80" height="80" loading="lazy"><b>Night Scope</b><span>A glowing sweep</span></li>
+          <li class="has-night"><img class="day-art" src="img/icons/overhead.webp" alt="" width="80" height="80" loading="lazy"><img class="night-art" src="img/icons/overhead-dark.webp" alt="" width="80" height="80" loading="lazy"><b>Overhead</b><span>Looking straight up</span></li>
+          <li class="has-night"><img class="day-art" src="img/icons/compass.webp" alt="" width="80" height="80" loading="lazy"><img class="night-art" src="img/icons/compass-dark.webp" alt="" width="80" height="80" loading="lazy"><b>Compass</b><span>The compass bezel</span></li>
+          <li class="has-night"><img class="day-art" src="img/icons/perimeter.webp" alt="" width="80" height="80" loading="lazy"><img class="night-art" src="img/icons/perimeter-dark.webp" alt="" width="80" height="80" loading="lazy"><b>Perimeter</b><span>Aircraft on the edge</span></li>
+          <li class="has-night"><img class="day-art" src="img/icons/sky-view.webp" alt="" width="80" height="80" loading="lazy"><img class="night-art" src="img/icons/sky-view-dark.webp" alt="" width="80" height="80" loading="lazy"><b>Sky View</b><span>Through the camera</span></li>
+          <li><img class="day-art" src="img/icons/classic.webp" alt="" width="80" height="80" loading="lazy"><b>Classic</b><span>The original icon</span></li>
+        </ul>
+      </div>
+      <div class="custom-block">
+        <h3>Widgets and Siri</h3>
+        <p>The Overhead widget keeps the nearest aircraft on your Home Screen, with what else is up there, and there are smaller ones for the Lock Screen. Or don’t look at all: ask Siri.</p>
+        <div class="widgets-siri">
+          <div class="widget" role="img" aria-label="The small Overhead widget: 7 aircraft in range, the nearest United UA1805 from Houston to LaGuardia, 2 miles southwest at 2,600 feet.">
+            <p class="w-head"><i></i>7 in range<time>9:41 AM</time></p>
+            <div class="w-hero">
+              <p class="w-op">United Airlines</p>
+              <p class="w-id">UA1805</p>
+              <p class="w-route">IAH → LGA</p>
+              <p class="w-where"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 19.5 21 12 16.8 4.5 21Z"/></svg>2 mi SW · 2,600 ft</p>
+            </div>
+          </div>
+          <div class="widget medium" role="img" aria-label="The medium Overhead widget: United UA1805 nearest, and also up there Delta DL2732 from Minneapolis, United UA2838 to Chicago, and Lufthansa LH403, a rare Boeing 747-8, to Frankfurt.">
+            <div class="w-col">
+              <p class="w-head"><i></i>7 in range<time>9:41 AM</time></p>
+              <div class="w-hero">
+                <p class="w-op">United Airlines</p>
+                <p class="w-id">UA1805</p>
+                <p class="w-route">IAH → LGA</p>
+                <p class="w-where"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 19.5 21 12 16.8 4.5 21Z"/></svg>2 mi SW · 2,600 ft</p>
+              </div>
+            </div>
+            <div class="w-list">
+              <span>Also up there</span>
+              <div class="w-row"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#g-airliner"/></svg><div><b>DL2732</b><small>MSP → LGA</small></div><em>5 mi</em></div>
+              <div class="w-row"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#g-airliner"/></svg><div><b>UA2838</b><small>LGA → ORD</small></div><em>6 mi</em></div>
+              <div class="w-row"><svg class="notable" viewBox="0 0 64 64" aria-hidden="true"><use href="#g-fourEngine"/></svg><div><b>LH403</b><small>EWR → FRA</small></div><em>9 mi</em></div>
+            </div>
+          </div>
+          <div class="siri">
+            <p class="siri-ask">What’s that plane in What The Flight?</p>
+            <p class="siri-say">That’s United Airlines UA1805, a Boeing 737-800 from Houston to New York. It’s 2 miles southwest at 2,600 feet, and passes closest in about 2 minutes.</p>
+            <p class="siri-more">Or say <q>Open Sky View in What The Flight</q>, <q>Start Sky Watch in What The Flight</q> or <q>Show my What The Flight logbook</q>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -224,7 +395,7 @@
       <p>On iPad the radar fills the screen, by day or by night. Turn it sideways with Map view on and a live map of the traffic sits beside the radar, turning as you turn.</p>
       <p>On a folding iPhone, open it halfway: radar on one side of the fold, map on the other.</p>
     </div>
-    <figure class="device tablet"><img src="img/screens/ipad-radar-dark.webp" alt="The iPad radar at night: Atlas Air 5Y855, a rare Boeing 747-400, descending into JFK, with around 29 aircraft on the edge." width="1100" height="1467" loading="lazy"></figure>
+    <figure class="device tablet"><img src="img/screens/ipad-radar-dark.webp" data-src-light="img/screens/ipad-radar-light.webp" data-src-dark="img/screens/ipad-radar-dark.webp" alt="The iPad radar: Frontier F93424, an Airbus A320neo from Dallas–Fort Worth on approach to LaGuardia, with about 24 aircraft on the edge." width="1100" height="1467" loading="lazy"></figure>
   </div>
 </section>
 
@@ -334,9 +505,9 @@
       <div class="copy wide">
         <p class="device-label" data-device="watch">Apple Watch</p>
         <h2>Point at a plane.</h2>
-        <p>A radar on your wrist with its own GPS. Raise your arm toward an aircraft and the Watch tells you what it is, or pick one and let haptics lead you to it. Complications show what’s nearest at a glance.</p>
+        <p>A radar on your wrist with its own GPS. Raise your arm toward an aircraft and the Watch tells you what it is, or pick one and let haptics lead you to it. Complications show what’s nearest and count down to the next one overhead.</p>
       </div>
-      <div class="watches">
+      <div class="watches four">
         <figure>
           <div class="device watch"><img src="img/screens/watch-radar.webp" alt="The Watch radar: Delta DL5721 from Boston to LaGuardia, 3 miles away, with aircraft around the edge." width="422" height="514" loading="lazy"></div>
           <figcaption><b>The radar.</b> Turn the Digital Crown for the next plane out.</figcaption>
@@ -348,6 +519,10 @@
         <figure>
           <div class="device watch"><img src="img/screens/watch-find.webp" alt="Find guiding toward LH403 with a large arrow: right 32 degrees." width="422" height="514" loading="lazy"></div>
           <figcaption><b>Find.</b> Clicks and taps on your wrist guide you to the one you picked.</figcaption>
+        </figure>
+        <figure>
+          <div class="device watch"><img src="img/screens/watch-complications.webp" alt="A watch face with What The Flight? complications: Nearest Aircraft with a little radar and Delta DL570 4 miles northeast, Next Overhead counting down 1:08 to WN2533, and round ones for the nearest distance, Sky Radar and Identify." width="422" height="514" loading="lazy"></div>
+          <figcaption><b>Complications.</b> The nearest aircraft, the whole sky, and a countdown to the next one overhead.</figcaption>
         </figure>
       </div>
     </div>
@@ -361,12 +536,12 @@
         <p>A radar, a map, or both side by side, with alerts read aloud when something flies over. Send your spot and the way your TV faces from your iPhone in one tap.</p>
       </div>
       <figure class="device tv">
-        <img src="img/screens/tv-split.webp" alt="Apple TV in Split view: United UA70 from Newark to Amsterdam on the radar, beside a map of New York traffic." width="2000" height="1125" loading="lazy" data-switcher-screen>
+        <img src="img/screens/tv-split.webp" alt="Apple TV in Split view: JetBlue B6324 from Los Angeles on approach to JFK on the radar, beside a map of New York traffic." width="2000" height="1125" loading="lazy" data-switcher-screen>
       </figure>
       <div class="tv-views" role="tablist" aria-label="Apple TV views">
-        <button type="button" role="tab" aria-selected="true" data-src="img/screens/tv-split.webp" data-alt="Apple TV in Split view: United UA70 from Newark to Amsterdam on the radar, beside a map of New York traffic."><span>Split</span></button>
-        <button type="button" role="tab" aria-selected="false" data-src="img/screens/tv-radar.webp" data-alt="The Apple TV radar: Austrian Airlines OS38 from Newark to Vienna, climbing, with about 37 aircraft around the edge."><span>Radar</span></button>
-        <button type="button" role="tab" aria-selected="false" data-src="img/screens/tv-map.webp" data-alt="The full-screen Apple TV map with labelled traffic over New York and the UA70 card in the corner."><span>Map</span></button>
+        <button type="button" role="tab" aria-selected="true" data-src="img/screens/tv-split-light.webp" data-src-dark="img/screens/tv-split.webp" data-alt="Apple TV in Split view: JetBlue B6324 from Los Angeles on approach to JFK on the radar, beside a map of New York traffic."><span>Split</span></button>
+        <button type="button" role="tab" aria-selected="false" data-src="img/screens/tv-radar-light.webp" data-src-dark="img/screens/tv-radar.webp" data-alt="The Apple TV radar: JetBlue B6324 from Los Angeles on approach to JFK, with about 32 aircraft around the edge."><span>Radar</span></button>
+        <button type="button" role="tab" aria-selected="false" data-src="img/screens/tv-map-light.webp" data-src-dark="img/screens/tv-map.webp" data-alt="The full-screen Apple TV map of New York traffic, with a private Sikorsky S-76 helicopter on the card in the corner."><span>Map</span></button>
       </div>
     </div>
   </section>
@@ -375,7 +550,7 @@
 <!-- Close -------------------------------------------------------------------------------- -->
 <section class="closing" data-band="teal">
   <div class="wrap">
-    <img class="closing-icon" src="img/icon-512.png" alt="" width="112" height="112" loading="lazy">
+    <img class="closing-icon" src="img/icon-224.png" srcset="img/icon-224.png 2x, img/icon-512.png 3x" alt="" width="112" height="112" loading="lazy">
     <h2>No account. No ads.</h2>
     <p>There’s nothing to sign up for and no tracking. Your logbook stays on your devices and in your own iCloud.</p>
     <div class="hero-actions">
@@ -389,8 +564,8 @@
 <footer class="site-footer" data-band="footer">
   <div class="wrap">
     <div class="footer-top">
-      <a class="brand" href="./"><img src="img/icon-512.png" alt="" width="28" height="28"><span>What The Flight?</span></a>
-      <nav aria-label="Footer"><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
+      <a class="brand" href="./"><img src="img/icon-72.png" srcset="img/icon-72.png 2x, img/icon-108.png 3x" alt="" width="28" height="28"><span>What The Flight?</span></a>
+      <nav aria-label="Footer"><a href="whats-new.html">What’s new</a><a href="press.html">Press</a><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
     </div>
     <p>Flight data from Flightradar24. Aircraft photos from Planespotters.net, credited to each photographer. Airline data from OpenFlights (ODbL) and airport data from OurAirports. Coverage depends on each aircraft’s transponder and the receivers near you, so some flights, including many military and private aircraft, may not appear.</p>
     <p>What The Flight? is for curiosity, not navigation. © 2026 Josh Sargent.</p>

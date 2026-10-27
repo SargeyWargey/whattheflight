@@ -1,0 +1,301 @@
+/* The sections added after the first launch page: favorites (gold), alerts and Sky Watch (coral),
+   Make it yours (topography, icons, widgets, Siri), the Watch's complications, and the What's New,
+   press and 404 pages. Colors are the app's Palette (UI/Theme.swift), as in site.css. */
+
+/* ------------------------------------------------------------------------------------------
+   Two more section hues, at the same OKLCH lightness as the others (0.22 by night, 0.93 by day):
+   gold, the favorite's yellow (hue 92), and coral, the radar's signal red (hue 32). */
+
+[data-band="gold"]  { --band-paper: #231900; --band-ink: #E0CD91; --band-lines: 1.1; }
+[data-band="coral"] { --band-paper: #2E100B; --band-ink: #FEBBAD; --band-lines: 1.1; }
+:root[data-theme="light"] [data-band="gold"]  { --band-paper: #EDE8D6; --band-ink: #5A4C1C; --band-lines: 0.7; }
+:root[data-theme="light"] [data-band="coral"] { --band-paper: #F8E2DE; --band-ink: #6D3E35; --band-lines: 0.7; }
+:is([data-band="gold"], [data-band="coral"]) { background: var(--band-paper); }
+
+/* The favorite's yellow (Palette.favorite). Text by day is a shade deeper than the app's favoriteText, so it passes AA on the gold paper. */
+:root { --favorite: #D9A200; --favorite-text: #7D5E00; }
+:root[data-theme="dark"] { --favorite: #FFD60A; --favorite-text: #FFD60A; }
+
+.heart {
+  display: inline-block; width: 0.9em; height: 0.9em; vertical-align: -0.08em;
+  background: var(--favorite);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.9 4.5 6.6 4.5c2.2 0 3.6 1.2 5.4 3.2 1.8-2 3.2-3.2 5.4-3.2 3.7 0 5.7 3.9 4.2 7.3C19.5 16.4 12 21 12 21Z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.9 4.5 6.6 4.5c2.2 0 3.6 1.2 5.4 3.2 1.8-2 3.2-3.2 5.4-3.2 3.7 0 5.7 3.9 4.2 7.3C19.5 16.4 12 21 12 21Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.copy .fav-word { color: var(--favorite-text); font-weight: 600; }
+
+/* ------------------------------------------------------------------------------------------
+   Alerts and Sky Watch: a Lock Screen drawn in the app's own type, with an overhead alert and the
+   Sky Watch Live Activity (WhatTheFlightWidgets/SkyWatchLiveActivity.swift). Sized in points of
+   a 402-point iPhone screen, so it scales with the phone. */
+
+.alerts-phone { justify-self: center; --w: clamp(250px, 26vw, 330px); }
+.lock-screen {
+  --pt: calc(100cqw / 402);
+  container-type: inline-size;
+  position: relative; overflow: hidden; isolation: isolate;
+  aspect-ratio: 660 / 1435;
+  border-radius: calc(var(--w) * 0.138);
+  background: #0D2C31;
+  color: #fff;
+  font-family: var(--sans);
+}
+.lock-screen p, .widget p { margin: 0; }
+.lock-screen canvas.topo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+.lock-screen::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, rgba(4, 18, 21, 0.1) 30%, rgba(4, 18, 21, 0.55) 100%);
+}
+
+.ls-island {
+  position: absolute; left: 50%; top: calc(11 * var(--pt));
+  display: flex; align-items: center; justify-content: space-between;
+  width: calc(196 * var(--pt)); height: calc(37 * var(--pt)); margin-left: calc(-98 * var(--pt));
+  padding: 0 calc(14 * var(--pt));
+  border-radius: 999px; background: #000;
+  font: 700 calc(14 * var(--pt)) var(--mono); color: #fff;
+}
+.ls-island svg { width: calc(17 * var(--pt)); height: calc(17 * var(--pt)); fill: #FF6B5E; transform: rotate(45deg); }
+
+.ls-date { position: absolute; left: 0; right: 0; top: calc(66 * var(--pt)); text-align: center; font: 600 calc(19 * var(--pt))/1.2 var(--sans); opacity: 0.9; }
+.ls-time {
+  position: absolute; left: 0; right: 0; top: calc(86 * var(--pt)); text-align: center;
+  font: 700 calc(96 * var(--pt))/1 var(--sans); letter-spacing: -0.02em;
+  font-feature-settings: "tnum";
+}
+
+.ls-stack { position: absolute; left: calc(10 * var(--pt)); right: calc(10 * var(--pt)); bottom: calc(92 * var(--pt)); display: grid; gap: calc(8 * var(--pt)); }
+
+.ls-note {
+  display: grid; grid-template-columns: calc(38 * var(--pt)) minmax(0, 1fr); gap: calc(10 * var(--pt));
+  padding: calc(12 * var(--pt)) calc(14 * var(--pt));
+  border-radius: calc(22 * var(--pt));
+  background: rgba(30, 38, 46, 0.62);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+  font-size: calc(15 * var(--pt)); line-height: 1.3;
+}
+.ls-note img { width: calc(38 * var(--pt)); height: calc(38 * var(--pt)); border-radius: 22.5%; align-self: center; }
+.ls-note p { margin: 0; }
+.ls-note .ls-head { display: flex; justify-content: space-between; gap: 8px; }
+.ls-note b { font-weight: 600; }
+.ls-note small { font-size: calc(13 * var(--pt)); color: rgba(255, 255, 255, 0.6); }
+.ls-note .ls-body { color: rgba(255, 255, 255, 0.86); }
+
+/* The Live Activity: Palette.paper at 92 % in dark mode, the night radar's colors. */
+.ls-activity {
+  padding: calc(16 * var(--pt));
+  border-radius: calc(22 * var(--pt));
+  background: rgba(10, 14, 20, 0.92);
+  font-family: var(--mono);
+}
+.la-top { display: flex; align-items: center; gap: calc(6 * var(--pt)); font: 700 calc(11 * var(--pt)) var(--mono); color: #8790A0; }
+.la-top svg { width: calc(14 * var(--pt)); height: calc(14 * var(--pt)); fill: none; stroke: #FF6B5E; stroke-width: 2.2; stroke-linecap: round; }
+.la-top span:last-child { margin-left: auto; font-weight: 600; }
+.la-main { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: calc(8 * var(--pt)); }
+.la-op { display: block; font: 600 calc(10 * var(--pt)) var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: #8790A0; }
+.la-id { display: flex; align-items: baseline; gap: calc(8 * var(--pt)); margin-top: 1px; }
+.la-id b { font: 800 calc(26 * var(--pt))/1.05 var(--mono); color: #A8A4FF; }
+.la-id span { font: 700 calc(15 * var(--pt)) var(--mono); color: #8C9BFF; }
+.la-where { text-align: right; }
+.la-where b { display: block; font: 800 calc(17 * var(--pt)) var(--mono); color: #E7EAF0; }
+.la-where span { font: 400 calc(12 * var(--pt)) var(--mono); color: #8790A0; }
+.la-foot { display: flex; align-items: center; justify-content: space-between; margin-top: calc(10 * var(--pt)); font: 600 calc(12 * var(--pt)) var(--mono); color: #A8A4FF; }
+.la-foot .la-count { display: inline-flex; align-items: center; gap: calc(5 * var(--pt)); }
+.la-foot svg { width: calc(13 * var(--pt)); height: calc(13 * var(--pt)); fill: none; stroke: currentColor; stroke-width: 2; }
+.la-stop {
+  display: inline-flex; align-items: center; gap: calc(5 * var(--pt));
+  padding: calc(6 * var(--pt)) calc(12 * var(--pt)); border-radius: 999px;
+  background: rgba(255, 107, 94, 0.2); color: #FF6B5E; font: 700 calc(12 * var(--pt)) var(--mono);
+}
+.la-stop i { width: calc(8 * var(--pt)); height: calc(8 * var(--pt)); border-radius: 1.5px; background: currentColor; }
+
+/* By day the notification and the Live Activity take the light look, as on an iPhone in light
+   mode: a pale glass banner, and the activity on Palette.paper with the day colors. */
+:root[data-theme="light"] .ls-note { background: rgba(246, 246, 248, 0.72); color: #1C1C1E; }
+:root[data-theme="light"] .ls-note small { color: rgba(60, 60, 67, 0.6); }
+:root[data-theme="light"] .ls-note .ls-body { color: rgba(28, 28, 30, 0.85); }
+:root[data-theme="light"] .ls-activity { background: rgba(233, 231, 226, 0.92); }
+:root[data-theme="light"] .la-top, :root[data-theme="light"] .la-op, :root[data-theme="light"] .la-where span { color: #75726C; }
+:root[data-theme="light"] .la-top svg { stroke: #E5483B; }
+:root[data-theme="light"] .la-top svg circle { fill: #E5483B; }
+:root[data-theme="light"] .la-id b { color: #3A33D6; }
+:root[data-theme="light"] .la-id span { color: #7C83E8; }
+:root[data-theme="light"] .la-where b { color: #3B3A37; }
+:root[data-theme="light"] .la-foot { color: #3A33D6; }
+:root[data-theme="light"] .la-stop { background: rgba(229, 72, 59, 0.16); color: #E5483B; }
+:root[data-theme="light"] .ls-bottom i { background: rgba(246, 246, 248, 0.5); }
+
+.ls-bottom { position: absolute; left: 0; right: 0; bottom: calc(34 * var(--pt)); display: flex; justify-content: space-between; padding: 0 calc(46 * var(--pt)); }
+.ls-bottom i { width: calc(50 * var(--pt)); height: calc(50 * var(--pt)); border-radius: 50%; background: rgba(30, 38, 46, 0.55); }
+.ls-home { position: absolute; left: 50%; bottom: calc(8 * var(--pt)); width: calc(140 * var(--pt)); height: calc(5 * var(--pt)); margin-left: calc(-70 * var(--pt)); border-radius: 3px; background: #fff; }
+
+/* ------------------------------------------------------------------------------------------
+   Make it yours */
+
+.custom-grid { display: grid; gap: clamp(56px, 7vw, 96px); margin-top: clamp(48px, 6vw, 72px); }
+.custom-block h3 {
+  margin: 0 0 8px;
+  font: 700 clamp(22px, 2.2vw, 28px)/1.2 var(--sans); letter-spacing: -0.015em; color: var(--value);
+}
+.custom-block > p { max-width: 38rem; margin: 0; font-size: 16.5px; line-height: 1.55; color: var(--text-2); }
+
+/* Topography: one still per style, drawn by js/topography.js. */
+.topo-styles {
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px);
+  margin: 26px 0 0; padding: 0; list-style: none;
+}
+.topo-styles li { margin: 0; }
+.topo-tile {
+  position: relative; overflow: hidden;
+  aspect-ratio: 4 / 3; border-radius: 16px;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--value) 14%, transparent);
+}
+.topo-tile canvas.topo { width: 100%; height: 100%; }
+.topo-styles b { display: block; margin-top: 12px; font: 700 15px var(--mono); color: var(--value); }
+.topo-styles span { display: block; margin-top: 3px; font-size: 14px; line-height: 1.4; color: var(--text-2); }
+
+/* App icons: the picker's art, the dark variant by night. */
+.icon-grid {
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 28px clamp(12px, 2vw, 28px);
+  margin: 30px 0 0; padding: 0; list-style: none;
+}
+.icon-grid li { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.icon-grid img {
+  display: block; width: clamp(60px, 6.2vw, 80px); height: auto; aspect-ratio: 1;
+  border-radius: 22.5%;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.18), 0 12px 24px -12px rgba(var(--frame-shadow), 0.5);
+}
+.icon-grid .night-art { display: none; }
+:root[data-theme="dark"] .icon-grid .has-night .day-art { display: none; }
+:root[data-theme="dark"] .icon-grid .has-night .night-art { display: block; }
+.icon-grid b { margin-top: 12px; font: 700 14px var(--mono); color: var(--value); }
+.icon-grid span { margin-top: 2px; font-size: 13.5px; line-height: 1.35; color: var(--text-2); }
+
+/* Widgets and Siri: the Overhead widget (WhatTheFlightWidgets/NearestFlightWidget.swift) at its
+   iPhone size, in points, on the page's paper. */
+.widgets-siri {
+  --u: 1px;
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: calc(22 * var(--u));
+  margin-top: 28px;
+}
+.widget {
+  flex: none; overflow: hidden;
+  width: calc(170 * var(--u)); height: calc(170 * var(--u));
+  padding: calc(16 * var(--u));
+  border-radius: calc(24 * var(--u));
+  background: var(--paper);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--value) 10%, transparent), 0 22px 40px -22px rgba(var(--frame-shadow), 0.6);
+  font-family: var(--mono);
+  display: flex; flex-direction: column;
+}
+.widget.medium { width: calc(364 * var(--u)); flex-direction: row; gap: calc(14 * var(--u)); }
+.widget .w-col { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.w-head { display: flex; align-items: center; gap: calc(5 * var(--u)); font: 700 calc(10 * var(--u)) var(--mono); color: var(--caption); }
+.w-head i { width: calc(6 * var(--u)); height: calc(6 * var(--u)); border-radius: 50%; background: var(--live); }
+.w-head time { margin-left: auto; font-weight: 400; font-size: calc(9 * var(--u)); color: var(--faint); }
+.w-hero { margin-top: auto; }
+.w-op { font: 600 calc(9 * var(--u)) var(--mono); letter-spacing: 0.11em; text-transform: uppercase; color: var(--caption); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-id { font: 800 calc(26 * var(--u))/1.1 var(--mono); color: var(--ink); }
+.widget.medium .w-id { font-size: calc(28 * var(--u)); }
+.w-route { font: 700 calc(13 * var(--u)) var(--mono); color: var(--route); }
+.w-where { display: flex; align-items: center; gap: calc(4 * var(--u)); margin-top: calc(4 * var(--u)); font: 600 calc(10 * var(--u)) var(--mono); color: var(--value); white-space: nowrap; }
+.w-where svg { width: calc(9 * var(--u)); height: calc(9 * var(--u)); fill: var(--signal); transform: rotate(225deg); }
+.w-list { display: flex; flex-direction: column; gap: calc(7 * var(--u)); flex: 1; min-width: 0; }
+.w-list > span { font: 600 calc(9 * var(--u)) var(--mono); letter-spacing: 0.13em; text-transform: uppercase; color: var(--caption); }
+.w-row { display: flex; align-items: center; gap: calc(6 * var(--u)); }
+.w-row svg { flex: none; width: calc(11 * var(--u)); height: calc(11 * var(--u)); fill: var(--blip); }
+.w-row svg.notable { fill: var(--notable); }
+.w-row div { flex: 1; min-width: 0; }
+.w-row b { display: block; font: 700 calc(12 * var(--u)) var(--mono); color: var(--ink); }
+.w-row small { display: block; font: 400 calc(9 * var(--u)) var(--mono); color: var(--caption); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-row em { font: 700 calc(11 * var(--u)) var(--mono); font-style: normal; color: var(--value); }
+
+.siri { flex: 1 1 280px; max-width: 420px; display: grid; gap: 12px; align-content: start; }
+.siri-ask {
+  justify-self: end; max-width: 92%;
+  padding: 12px 16px; border-radius: 20px 20px 6px 20px;
+  background: var(--ink); color: var(--paper);
+  font-size: 16px; line-height: 1.4;
+}
+.siri-say {
+  justify-self: start; max-width: 96%;
+  padding: 14px 16px; border-radius: 20px 20px 20px 6px;
+  background: color-mix(in srgb, var(--value) 8%, var(--paper));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--value) 10%, transparent);
+  color: var(--value); font-size: 16px; line-height: 1.45;
+}
+.siri-say::before {
+  content: ""; display: block; width: 26px; height: 26px; margin-bottom: 8px; border-radius: 50%;
+  background: conic-gradient(from 200deg, #5B6CFF, #C84CFF, #FF5E8A, #FFB347, #5BD1FF, #5B6CFF);
+  -webkit-mask: radial-gradient(circle, transparent 5px, #000 6px); mask: radial-gradient(circle, transparent 5px, #000 6px);
+}
+.siri-more { margin: 4px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--text-2); }
+.siri-more q { color: var(--value); }
+
+/* ------------------------------------------------------------------------------------------
+   Watch: four across with the complications. */
+
+.watches.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.watches.four .watch { --w: clamp(160px, 16vw, 210px); }
+
+/* ------------------------------------------------------------------------------------------
+   What's New and press pages */
+
+.release { margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.release:first-of-type { border-top: 0; padding-top: 0; }
+.release h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin: 0 0 6px; }
+.release h2 small { font: 500 14px var(--mono); color: var(--caption); letter-spacing: 0; }
+.release-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--live) 55%, transparent);
+  font: 700 12px var(--mono); color: var(--live); vertical-align: 3px;
+}
+.doc h3 { margin: 28px 0 8px; font: 700 17px/1.3 var(--sans); color: var(--value); }
+
+.facts { display: grid; grid-template-columns: minmax(8rem, max-content) minmax(0, 1fr); gap: 10px 22px; margin: 18px 0 0; }
+.facts dt { font: 700 12px/1.9 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--caption); }
+.facts dd { margin: 0; color: var(--text-2); }
+
+.doc .press-assets { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin: 18px 0 0; padding: 0; list-style: none; }
+.press-assets li { margin: 0 !important; }
+.press-assets a {
+  display: flex; flex-direction: column; gap: 10px; height: 100%;
+  padding: 12px; border-radius: 14px; text-decoration: none;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--paper) 92%, #fff 8%);
+  color: var(--value); font: 600 13px/1.35 var(--mono);
+}
+:root[data-theme="light"] .press-assets a { background: color-mix(in srgb, var(--paper) 55%, #fff 45%); }
+.press-assets a:hover { border-color: var(--ink); }
+.press-assets img { display: block; width: 100%; height: 110px; object-fit: contain; }
+.press-assets small { display: block; font-weight: 400; color: var(--caption); }
+
+/* 404 */
+.lost { min-height: 62vh; display: grid; place-content: center; text-align: center; padding: 60px var(--gutter); }
+.lost .code { margin: 0; font: 800 clamp(64px, 12vw, 128px)/1 var(--mono); color: var(--ink); letter-spacing: -0.03em; }
+.lost h1 { margin: 12px 0 8px; font: 700 clamp(28px, 4vw, 40px)/1.15 var(--sans); color: var(--value); }
+.lost p { max-width: 28em; margin: 0 auto; color: var(--text-2); }
+.lost .hero-actions { margin-top: 26px; }
+.lost .store-pill { text-decoration: none; }
+
+/* ------------------------------------------------------------------------------------------
+   Smaller screens */
+
+@media (max-width: 920px) {
+  .topo-styles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .icon-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .watches.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .alerts-phone { --w: min(70vw, 280px); }
+  .topo-styles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .icon-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .watches.four { grid-template-columns: none; }
+  .watches.four .watch { --w: 180px; }
+  .facts { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .facts dd { margin-bottom: 12px; }
+}
+@media (max-width: 420px) {
+  .widgets-siri { --u: 0.86px; gap: 16px; }
+}

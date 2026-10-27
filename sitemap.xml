@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Submit https://sargeywargey.github.io/whattheflight/sitemap.xml in Google Search Console and
+     Bing Webmaster Tools at launch. A project site can't serve robots.txt (crawlers only read it at
+     the host's root), so this file isn't referenced from one. Update lastmod when a page changes. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://sargeywargey.github.io/whattheflight/</loc><lastmod>2026-10-26</lastmod></url>
+  <url><loc>https://sargeywargey.github.io/whattheflight/support.html</loc><lastmod>2026-10-26</lastmod></url>
+  <url><loc>https://sargeywargey.github.io/whattheflight/privacy.html</loc><lastmod>2026-10-26</lastmod></url>
+  <url><loc>https://sargeywargey.github.io/whattheflight/whats-new.html</loc><lastmod>2026-10-26</lastmod></url>
+  <url><loc>https://sargeywargey.github.io/whattheflight/press.html</loc><lastmod>2026-10-26</lastmod></url>
+</urlset>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<!-- GitHub Pages serves this page for any missing address under /whattheflight/, however deep,
+     so its links resolve from the site's folder instead of from the address that was asked for. -->
+<base href="/whattheflight/">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- A 404 page is never indexed, so this noindex stays after launch. -->
+<meta name="robots" content="noindex">
+<title>Page not found · What The Flight?</title>
+<meta name="description" content="This page isn’t here.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0E14">
+<link rel="icon" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="stylesheet" href="css/site.css?v=202610262139">
+<link rel="stylesheet" href="css/features.css?v=202610262139">
+<script>
+  // Always opens at night; a switch to day lasts for this visit (this tab) only.
+  try { if (sessionStorage.getItem('wtf.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}
+</script>
+<script src="js/topography.js?v=202610262139" defer></script>
+<script src="js/site.js?v=202610262139" defer></script>
+</head>
+<body>
+
+<canvas class="backdrop" data-backdrop="survey" aria-hidden="true"></canvas>
+
+<header class="page-top" data-band>
+  <div class="site-header">
+    <a class="brand" href="./" aria-label="What The Flight? home">
+      <img src="img/icon-36.png" srcset="img/icon-72.png 2x, img/icon-108.png 3x" alt="" width="36" height="36">
+      <span>What The Flight?</span>
+    </a>
+    <nav class="site-nav" aria-label="Pages">
+      <a href="./">Home</a>
+      <a href="support.html">Support</a>
+      <a href="privacy.html">Privacy</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Switch to the night radar" data-theme-toggle>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="sun" cx="12" cy="12" r="4.2"/><path class="rays" d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/><path class="moon" d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="lost" data-band="doc">
+  <p class="code">404</p>
+  <h1>Nothing on the radar here.</h1>
+  <p>That page has flown out of range. It may have moved, or the address may have a typo.</p>
+  <div class="hero-actions">
+    <a class="store-pill" href="./">Back to the radar</a>
+    <a class="store-pill" href="support.html">Get help</a>
+  </div>
+</main>
+
+<footer class="site-footer" data-band="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <a class="brand" href="./"><img src="img/icon-72.png" srcset="img/icon-72.png 2x, img/icon-108.png 3x" alt="" width="28" height="28"><span>What The Flight?</span></a>
+      <nav aria-label="Footer"><a href="whats-new.html">What’s new</a><a href="press.html">Press</a><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
+    </div>
+    <p>Flight data from Flightradar24. Aircraft photos from Planespotters.net, credited to each photographer. Airline data from OpenFlights (ODbL) and airport data from OurAirports.</p>
+    <p>What The Flight? is for curiosity, not navigation. © 2026 Josh Sargent.</p>
+  </div>
+</footer>
+
+</body>
+</html>
